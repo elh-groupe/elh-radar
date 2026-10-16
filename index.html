@@ -110,6 +110,11 @@ footer{color:var(--muted);font-size:13px;line-height:1.5}
 .nb-l{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:4px}
 .nb{padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--accent) 10%,var(--panel));border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line))}
 @media(max-width:760px){.nightgrid{grid-template-columns:minmax(90px,1fr) repeat(7,minmax(34px,1fr));gap:4px}.ng-c{height:38px;font-size:14px;border-radius:9px}.ng-v{font-size:12px}}
+.ng-w{display:grid;place-items:center;font-size:13px;color:var(--muted);height:26px}
+.ng-c b small{font-size:11px;font-weight:400;margin-left:1px;opacity:.85}
+.hol{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;font-size:13px}
+.hb{padding:5px 10px;border-radius:999px;background:color-mix(in srgb,var(--accent2) 10%,var(--panel));border:1px solid color-mix(in srgb,var(--accent2) 30%,var(--line));color:var(--muted)}
+.hb b{color:var(--fg);font-weight:600}
 /* aéroports d'origine */
 .apmap{display:flex;flex-direction:column;gap:12px;margin-top:6px}
 .aprow{opacity:0;transform:translateX(-14px);transition:opacity .6s cubic-bezier(.2,.8,.2,1) var(--d),transform .6s cubic-bezier(.2,.8,.2,1) var(--d)}
@@ -227,10 +232,11 @@ footer{color:var(--muted);font-size:13px;line-height:1.5}
 <section class="tab" id="sec-t" hidden>
   <div class="chapter"><span class="num">01</span><h2>Où sont les touristes</h2><p>La ville, hôtel par hôtel, et qui dort où cette semaine.</p></div>
   <div class="card radar-hero"><div class="radar-row"><div class="radar" aria-hidden="true"><div class="cross"></div><div class="sweep"></div><i style="--x:62%;--y:38%"></i><i style="--x:30%;--y:60%"></i><i style="--x:70%;--y:70%"></i><i style="--x:45%;--y:25%"></i><i style="--x:22%;--y:30%"></i><i style="--x:78%;--y:55%"></i></div><div class="radar-txt"><b>Radar actif</b><span class="big-t">Tout Marrakech est capté</span><span id="radar-clock"></span><span>Hôtels, quartiers et arrivées captés en continu · prochaine mise à jour complète demain 7 h</span></div></div></div>
-  <div class="card night"><h2>Indice de nuit, 7 jours <span class="eyebrow est" style="margin-left:8px">estimation · 0 à 100</span></h2>
-    <p class="night-sub">Pour chaque soir à venir : combien de touristes seront en ville (arrivées des 4 derniers jours), vacances scolaires des pays émetteurs, jour de la semaine propre à chaque établissement, pression de la concurrence. Plus c'est chaud, plus il faut du monde, du budget et une tête d'affiche.</p>
+  <div class="card night"><h2>Affluence estimée, 7 jours <span class="eyebrow est" style="margin-left:8px">estimation en % · 100 % = soirée pleine</span></h2>
+    <p class="night-sub">Pour chaque soir à venir : touristes en ville (arrivées des 4 derniers jours), vacances scolaires France et Royaume-Uni, météo prévue, jour de la semaine propre à chaque établissement, pression de la concurrence.</p>
     <div class="nightgrid" id="nightGrid"></div>
     <div class="night-best" id="nightBest"></div>
+    <div class="hol" id="holBar"></div>
   </div>
   <div class="kpis">
     <div class="kpi"><div class="v">74 %</div><div class="l">des 9 700 hébergements de la ville complets ce soir</div><div class="t real">relevé 16 h</div></div>
@@ -396,23 +402,27 @@ function drawMap(){
 }
 // ---------- rendu section touristes
 // ---------- indice de nuit (estimation transparente)
+const WX={"17":[29.9,5],"18":[26.0,15],"19":[23.6,15],"20":[25.2,5],"21":[26.3,10],"22":[26.2,15],"23":[27.3,15]}; // prévision météo : [max °C, % pluie], relevée le 16 oct.
+const HOL=[["France · Toussaint","2026-10-17","2026-11-01"],["Royaume-Uni · half-term (Angleterre, pays de Galles)","2026-10-26","2026-10-30"],["Écosse · October break (Glasgow)","2026-10-12","2026-10-16"],["France · Noël","2026-12-19","2027-01-03"],["Royaume-Uni · Noël","2026-12-21","2027-01-01"]];
 const NI=(function(){
-  // arrivées estimées par jour (passagers), 13 → 23 oct. ; 15 et 16 relevés, les autres d'après le rythme de la semaine
-  const arr={"13":12500,"14":13300,"15":15600,"16":17000,"17":17800,"18":14800,"19":13300,"20":12500,"21":13300,"22":15600,"23":17000};
+  const arr={"13":12500,"14":13300,"15":15600,"16":17000,"17":17800,"18":14800,"19":13300,"20":12500,"21":13300,"22":15600,"23":17000}; // passagers/jour ; 15 et 16 relevés, les autres estimés
   const days=[["Sam 17",17,6],["Dim 18",18,0],["Lun 19",19,1],["Mar 20",20,2],["Mer 21",21,3],["Jeu 22",22,4],["Ven 23",23,5]];
-  const inTown=d=>{let s=0;for(let k=d-3;k<=d;k++)s+=arr[String(k)]||13000;return s/(4*15000);}; // 1 = semaine normale
-  const holiday=d=>d>=17?1.15:1; // Toussaint France dès le 17 octobre
-  const prof={ // profil par jour de semaine : 0=dim … 6=sam
-    "555 Marrakech":[.45,.3,.35,.5,.6,1,1],"Sky 5":[.7,.5,.55,.6,.75,1,1],"Secret Room":[.85,.3,.35,.5,.6,1,1],
-    "Nommos Marrakech":[.8,.6,.65,.7,.8,1,1],"Nommos Pool":[1,.7,.7,.7,.75,.9,1],"Lalala":[1,.65,.65,.7,.75,.9,1]};
-  const comp={"555 Marrakech":[0,0,0,0,0,-6,-6],"Sky 5":[0,0,0,0,0,-3,-3],"Secret Room":[0,0,0,0,0,-6,-6]}; // Theatro : 72 annonces actives, pression vendredi/samedi
-  const rows=Object.keys(prof).map(v=>[v,days.map(([lab,d,w])=>{const base=inTown(d)*holiday(d)*prof[v][w]*72;const c=(comp[v]||[0,0,0,0,0,0,0])[w];return Math.max(5,Math.min(100,Math.round(base+c)));})]);
+  const inTown=d=>{let s=0;for(let k=d-3;k<=d;k++)s+=arr[String(k)]||13000;return s/(4*15000);};
+  const hol=d=>{const ds="2026-10-"+String(d).padStart(2,"0");let f=1;if(ds>="2026-10-17"&&ds<="2026-11-01")f*=1.12;if(ds>="2026-10-26"&&ds<="2026-10-30")f*=1.08;return f;};
+  const prof={"555 Marrakech":[.45,.3,.35,.5,.6,1,1],"Sky 5":[.7,.5,.55,.6,.75,1,1],"Secret Room":[.85,.3,.35,.5,.6,1,1],"Nommos Marrakech":[.8,.6,.65,.7,.8,1,1],"Nommos Pool":[1,.7,.7,.7,.75,.9,1],"Lalala":[1,.65,.65,.7,.75,.9,1]};
+  const outdoor={"Nommos Pool":1,"Lalala":1,"Sky 5":.5};
+  const wx=(v,d)=>{const w=WX[String(d)];if(!w)return 1;const [t,r]=w;let f=t>=28?1:t>=25?.92:t>=22?.8:.65;if(r>=40)f*=.8;const o=outdoor[v]||0;return 1-(1-f)*o;};
+  const comp={"555 Marrakech":[0,0,0,0,0,-6,-6],"Sky 5":[0,0,0,0,0,-3,-3],"Secret Room":[0,0,0,0,0,-6,-6]};
+  const rows=Object.keys(prof).map(v=>[v,days.map(([lab,d,w])=>{const base=inTown(d)*hol(d)*prof[v][w]*wx(v,d)*74;const c=(comp[v]||[0,0,0,0,0,0,0])[w];return Math.max(5,Math.min(100,Math.round(base+c)));})]);
   return {days,rows};
 })();
-(function(){const g=$("#nightGrid"),b=$("#nightBest");if(!g)return;const col=v=>v>=80?'var(--heat4)':v>=65?'var(--heat3)':v>=50?'var(--heat2)':'var(--heat1)';
-  g.innerHTML=`<div class="ng-h"></div>`+NI.days.map(([l])=>`<div class="ng-h">${l}</div>`).join("")+NI.rows.map(([v,sc])=>`<div class="ng-v">${v}</div>`+sc.map((s,i)=>`<div class="ng-c" style="--c:${col(s)};--i:${i}" title="${v} · ${NI.days[i][0]} : ${s}/100"><b>${s}</b></div>`).join("")).join("");
-  const best=NI.rows.map(([v,sc])=>{const m=Math.max(...sc);const i=sc.indexOf(m);return `<span class="nb"><b>${v}</b> ${NI.days[i][0]} · ${m}</span>`;}).join("");
-  b.innerHTML=`<span class="nb-l">Meilleur soir</span>${best}`;})();
+(function(){const g=$("#nightGrid"),b=$("#nightBest"),hb=$("#holBar");if(!g)return;const col=v=>v>=80?'var(--heat4)':v>=65?'var(--heat3)':v>=50?'var(--heat2)':'var(--heat1)';
+  const wxc=d=>{const w=WX[String(d)];if(!w)return "";const [t,r]=w;const ic=r>=40?"🌧":t>=28?"☀️":t>=24?"🌤":"⛅";return `<div class="ng-w">${ic} ${Math.round(t)}°</div>`;};
+  g.innerHTML=`<div class="ng-h"></div>`+NI.days.map(([l])=>`<div class="ng-h">${l}</div>`).join("")+`<div class="ng-v" style="font-weight:400;color:var(--muted);font-size:12px">Météo prévue</div>`+NI.days.map(([,d])=>wxc(d)).join("")+NI.rows.map(([v,sc])=>`<div class="ng-v">${v}</div>`+sc.map((s,i)=>`<div class="ng-c" style="--c:${col(s)};--i:${i}" title="${v} · ${NI.days[i][0]} : ${s} %"><b>${s}<small>%</small></b></div>`).join("")).join("");
+  const best=NI.rows.map(([v,sc])=>{const m=Math.max(...sc);const i=sc.indexOf(m);return `<span class="nb"><b>${v}</b> ${NI.days[i][0]} · ${m} %</span>`;}).join("");
+  b.innerHTML=`<span class="nb-l">Meilleur soir</span>${best}`;
+  const f=s=>new Date(s).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+  hb.innerHTML=`<span class="nb-l">Vacances scolaires</span>`+HOL.map(([n,a,z])=>`<span class="hb"><b>${n}</b> ${f(a)} → ${f(z)}</span>`).join("");})();
 
 function render(){
   const w=weeks[wk],real=wk===0;$("#wkLabel").textContent=w[0];
