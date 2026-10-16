@@ -237,7 +237,7 @@ footer{color:var(--muted);font-size:13px;line-height:1.5}
   <div class="chapter"><span class="num">01</span><h2>Où sont les touristes</h2><p>La ville, hôtel par hôtel, et qui dort où cette semaine.</p></div>
   <div class="card radar-hero"><div class="radar-row"><div class="radar" aria-hidden="true"><div class="cross"></div><div class="sweep"></div><i style="--x:62%;--y:38%"></i><i style="--x:30%;--y:60%"></i><i style="--x:70%;--y:70%"></i><i style="--x:45%;--y:25%"></i><i style="--x:22%;--y:30%"></i><i style="--x:78%;--y:55%"></i></div><div class="radar-txt"><b>Radar actif</b><span class="big-t">Tout Marrakech est capté</span><span id="radar-clock"></span><span>Hôtels, quartiers et arrivées captés en continu · prochaine mise à jour complète demain 7 h</span></div></div></div>
   <div class="card night"><h2>Affluence estimée jusqu'au 31 octobre <span class="eyebrow est" style="margin-left:8px">estimation en % · 100 % = soirée pleine</span></h2>
-    <p class="night-sub">Pour chaque soir à venir : touristes en ville (arrivées des 4 derniers jours), vacances scolaires France et Royaume-Uni, météo prévue (7 jours), événements annoncés en ville, jour de la semaine propre à chaque établissement, pression de la concurrence, et distance du centre (Nommos Pool et Lalala, route de l'Ourika, pénalisés par rapport au 555 et au Sky 5 à l'Hivernage).</p>
+    <p class="night-sub">Pour chaque soir à venir : touristes en ville (arrivées des 4 derniers jours), vacances scolaires France et Royaume-Uni, météo prévue (7 jours), événements annoncés en ville, jour de la semaine propre à chaque établissement, pression de la concurrence, et distance du centre (Nommos Pool et Lalala, route de l'Ourika, comptés à 65 % du potentiel du 555 et du Sky 5 à l'Hivernage).</p>
     <div class="nightgrid" id="nightGrid"></div>
     <div class="night-best" id="nightBest"></div>
     <div class="hol" id="holBar"></div>
@@ -419,7 +419,7 @@ const NI=(function(){
   const prof={"555 Marrakech":[.45,.3,.35,.5,.6,1,1],"Sky 5":[.7,.5,.55,.6,.75,1,1],"Secret Room":[.85,.3,.35,.5,.6,1,1],"Nommos Marrakech":[.8,.6,.65,.7,.8,1,1],"Nommos Pool":[1,.7,.7,.7,.75,.9,1],"Lalala":[1,.65,.65,.7,.75,.9,1]};
   const kind={"555 Marrakech":"clubs","Sky 5":"clubs","Secret Room":"clubs","Nommos Marrakech":"resto","Nommos Pool":"pool","Lalala":"resto"};
   const outdoor={"Nommos Pool":1,"Lalala":1,"Sky 5":.5};
-  const dist={"Nommos Pool":.8,"Lalala":.8}; // route de l'Ourika, à 20 min du centre : navette ou taxi obligatoire, moins de clients spontanés que 555 / Sky 5 (Hivernage)
+  const dist={"Nommos Pool":.65,"Lalala":.65}; // route de l'Ourika, à 20 min du centre : navette ou taxi obligatoire, moins de clients spontanés que 555 / Sky 5 (Hivernage)
   const wx=(v,d)=>{const w=WX[String(d)];if(!w)return 1;const [t,r]=w;let f=t>=28?1:t>=25?.92:t>=22?.8:.65;if(r>=40)f*=.8;const o=outdoor[v]||0;return 1-(1-f)*o;};
   const comp={"555 Marrakech":[0,0,0,0,0,-6,-6],"Sky 5":[0,0,0,0,0,-3,-3],"Secret Room":[0,0,0,0,0,-6,-6]};
   const ev=(v,d)=>EV.filter(e=>d>=e[1]&&d<=e[2]).reduce((s,e)=>s+(e[4][kind[v]]||0),0);
