@@ -266,8 +266,6 @@ footer{color:var(--muted);font-size:13px;line-height:1.5}
   <div class="kpis">
     <div class="kpi"><div class="v">72</div><div class="l">annonces actives de Theatro cette semaine · tous les autres clubs : 0</div><div class="t real">relevé 14 oct.</div></div>
     <div class="kpi"><div class="v">≈ 240</div><div class="l">personnes touchées hors Maroc par l'annonce anglaise (Royaume-Uni 50, UE 187) ; annonce « France » : 1 seule personne</div><div class="t real">relevé 16 oct.</div></div>
-    <div class="kpi"><div class="v">3,8 vs 4,4</div><div class="l">555 et Secret Room contre Theatro (note Google)</div><div class="t real">relevé 14 oct.</div></div>
-    <div class="kpi"><div class="v">4,8</div><div class="l">Babouchka, le club le mieux noté de la ville (4 286 avis)</div><div class="t real">relevé 14 oct.</div></div>
   </div>
   <div class="card"><h2>Preuves : la campagne Theatro</h2>
     <div class="proof">
@@ -287,19 +285,7 @@ footer{color:var(--muted);font-size:13px;line-height:1.5}
       <div><img src="ad-target.jpg" alt="Panneau de transparence de l'annonce : lieu Paris, âge 23-45 ans, genre tous" style="width:100%;border-radius:8px;border:1px solid var(--line)"><div style="margin-top:8px;font-size:15px;color:var(--muted)">Lecture : Theatro vise les Parisiens de 23 à 45 ans, hommes et femmes, sur les 5 applications. Résultat réel : <b style="color:var(--fg)">71 % d'hommes</b>, <b style="color:var(--fg)">65 % de 25-34 ans</b>. Mêmes réglages que nos campagnes résidence France ; la différence se joue sur la vidéo et le budget.</div></div>
     </div>
   </div>
-  <div class="grid2">
-    <div class="card"><h2>Publicité active, par concurrent</h2><svg class="chart" viewBox="0 0 440 300" role="img" aria-label="Annonces actives par concurrent" id="adChart"></svg></div>
-    <div class="card"><h2>Notes Google : clubs</h2><svg class="chart" viewBox="0 0 440 300" role="img" aria-label="Note Google des clubs" id="rateChart"></svg></div>
-  </div>
-  <div class="card"><h2>Ce que disent les avis cette semaine</h2>
-    <div style="overflow-x:auto"><table><thead><tr><th>Établissement</th><th class="n">Note</th><th>Positif</th><th>Négatif</th></tr></thead><tbody>
-    <tr><td><b>555</b></td><td class="n">3,8</td><td>Ambiance, tables VIP</td><td>Pourboires réclamés (sécurité, toilettes), ajout sur carte, refus d'entrée, volume</td></tr>
-    <tr><td><b>Secret Room</b></td><td class="n">3,8</td><td>Afro Night, Aurora citée 3 fois</td><td>Réservation confirmée puis refusée à la porte</td></tr>
-    <tr><td>Theatro</td><td class="n">4,4</td><td>Clients fidèles (11e visite), ticket converti en boisson, mascottes</td><td>Entrée 300 DH jugée chère</td></tr>
-    <tr><td>Babouchka</td><td class="n">4,8</td><td>DJ, ambiance</td><td>Filles qui poussent à la dépense, table de 10 sur petite table</td></tr>
-    <tr><td>Eden</td><td class="n">3,7</td><td>—</td><td>Sécurité violente, bouteille 5 000 DH, lignes ajoutées sur l'addition</td></tr>
-    <tr><td>The Circle</td><td class="n">2,7</td><td>Staff attentionné</td><td>Sol sale, tables déplacées, sentiment de discrimination</td></tr>
-    </tbody></table></div></div>
+  <div class="card"><h2>Publicité active, par concurrent</h2><svg class="chart" viewBox="0 0 440 300" role="img" aria-label="Annonces actives par concurrent" id="adChart"></svg></div>
   <div class="next"><a href="#" data-go="g">Lire les avis</a></div>
 </section>
 
@@ -437,7 +423,7 @@ const G=[
   $("#gList").innerHTML=PG.map(([pn,names],i)=>{const gs=names.map(n=>G.find(g=>g[0]===n)).filter(Boolean);const n7=gs.reduce((s,g)=>s+g[4],0),po=gs.reduce((s,g)=>s+g[6][0],0),ne=gs.reduce((s,g)=>s+g[6][1],0);return `<div class="pole-h"><span class="num">0${i+1}</span><h3>${pn}</h3><span class="pole-s">+${n7} avis en 7 jours · <b style="color:var(--good)">${po} positifs</b> · <b style="color:var(--bad)">${ne} négatifs</b></span></div><div class="proof">${gs.map(card).join("")}</div>`;}).join("");
 })();
 (function(){const A=[["Theatro",72],["Eden",0],["Babouchka",0],["The Circle",0],["Koya",0],["Safran",0],["Snob Beach",0],["Café del Mar",0]];const s=$("#adChart");s.innerHTML=A.map(([n,v],i)=>{const y=14+i*26,w=v/72*280;return `<g><text x="110" y="${y+13}" text-anchor="end" font-size="12" fill="var(--fg)">${n}</text><rect x="118" y="${y}" width="${Math.max(w,2)}" height="18" rx="3" fill="${v>20?'var(--heat4)':v>0?'var(--heat2)':'var(--comp)'}"/><text x="${124+Math.max(w,2)}" y="${y+13}" font-size="12" fill="var(--fg)">${v}</text></g>`;}).join("");
-  const R=[["Babouchka",4.8,0],["Theatro",4.4,0],["555",3.8,1],["Secret Room",3.8,1],["Eden",3.7,0],["The Circle",2.7,0]];const r=$("#rateChart");r.innerHTML=R.map(([n,v,e],i)=>{const y=20+i*44,w=v/5*280;return `<g><text x="110" y="${y+16}" text-anchor="end" font-size="13" font-weight="${e?700:400}" fill="var(--fg)">${n}</text><rect x="118" y="${y}" width="${w}" height="24" rx="4" fill="${e?'var(--elh)':'var(--comp)'}"/><text x="${124+w}" y="${y+16}" font-size="13" font-weight="600" fill="var(--fg)">${v.toLocaleString('fr-FR')}</text></g>`;}).join("");})();
+})();
 // ---------- init
 // ---------- facturation Meta (compte ELH GROUP, EUR) — mis à jour chaque matin
 const SPEND=[["2026-09-17",741.84],["2026-09-18",765.41],["2026-09-19",1581.16],["2026-09-20",783.22],["2026-09-21",888.42],["2026-09-22",869.79],["2026-09-23",1113.9],["2026-09-24",943.77],["2026-09-25",1404.11],["2026-09-26",1300.62],["2026-09-27",1281.36],["2026-09-28",1066.13],["2026-09-29",1083.38],["2026-09-30",982.6],["2026-10-01",992.78],["2026-10-02",1114.27],["2026-10-03",1114.64],["2026-10-04",1252.56],["2026-10-05",1042.73],["2026-10-06",935.25],["2026-10-07",854.48],["2026-10-08",842.06],["2026-10-09",901],["2026-10-10",975.26],["2026-10-11",1147.9],["2026-10-12",1074.88],["2026-10-13",995.73],["2026-10-14",812.78],["2026-10-15",776.04],["2026-10-16",414.15]];
