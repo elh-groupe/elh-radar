@@ -310,7 +310,7 @@ footer{color:var(--muted);font-size:13px;line-height:1.5}
   <div class="card"><h2>Remarque et ciblage Meta recommandé</h2><p style="margin:0 0 10px;color:var(--muted);font-size:13px">Synthèse automatique des quatre parties : où sont les touristes, aéroport, concurrence, avis Google, dépenses.</p><div class="target" id="mReco"></div></div>
 </section>
 
-<footer>Données publiques de réservation, programme aérien du jour, statistiques officielles d'hébergement, marché de la location courte durée, bibliothèque publicitaire et avis publics. Taux hôtel par hôtel déduit des chambres restantes et des prix du jour (±5 points). Fond de carte © OpenStreetMap.</footer>
+<footer>Données publiques de réservation, programme aérien du jour, statistiques officielles d'hébergement, marché de la location courte durée, bibliothèque publicitaire et avis publics. Taux hôtel par hôtel déduit des chambres restantes ce soir (±5 points). Fond de carte © OpenStreetMap.</footer>
 </div>
 
 <script>
@@ -337,7 +337,7 @@ const V=[["Nommos",31.5916,-7.9898,1],["555 · Sky 5",31.5921,-7.9899,1],["Secre
 const BK=[["15 oct.",74],["24 oct.",56],["14 nov.",48],["5 déc.",45],["30 déc.",55]];
 const aff={fr:{hiv:1,gue:1.1,med:1.2,pal:1,agd:.6,tar:.8,our:1,ami:1,maa:1},uk:{hiv:1.2,gue:.8,med:1.1,pal:1.2,agd:.5,tar:.5,our:1.3,ami:1.1,maa:1.1},es:{hiv:.8,gue:1.3,med:1,pal:.7,agd:1.2,tar:.6,our:1.1,ami:.8,maa:.7},it:{hiv:.9,gue:1.1,med:1.3,pal:.8,agd:.6,tar:.6,our:.9,ami:.9,maa:.9}};
 const relOcc=r=>{if(r==="C")return 98;const n=r.split(":")[0];if(n==="O")return 85;const k=+n;return k<=1?97:k<=3?95:90;};
-const relTag=r=>{if(r==="C")return '<span class="tag full">Complet</span>';const [n,p]=r.split(":");const px=p?` · ${(+p).toLocaleString('fr-FR')} DH`:"";return n==="O"?`<span class="tag open">Ouvert${px}</span>`:`<span class="tag few">${n} ch. restante${n>1?"s":""}${px}</span>`;};
+const relTag=r=>{if(r==="C")return '<span class="tag full">Complet</span>';const [n,p]=r.split(":");const px="";return n==="O"?`<span class="tag open">Ouvert${px}</span>`:`<span class="tag few">${n} ch. restante${n>1?"s":""}${px}</span>`;};
 const col=v=>v<60?"var(--heat1)":v<75?"var(--heat2)":v<90?"var(--heat3)":"var(--heat4)";
 const fmtK=n=>Math.round(n).toLocaleString('fr-FR')+" 000";
 let wk=0,focus=null,layerH=true;
