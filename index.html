@@ -131,6 +131,15 @@ footer{color:var(--muted);font-size:13px;line-height:1.5}
 .appill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .appill b{background:rgba(255,255,255,.28);border-radius:999px;padding:2px 7px;font-size:12px;flex:none}
 @media(max-width:700px){.apflow{flex-wrap:wrap}.appill{flex:1 1 auto!important}}
+/* qui joue contre nous */
+.vs-v{display:flex;flex-direction:column;justify-content:center;font-size:14px;padding:4px 6px 4px 0;line-height:1.2}
+.vs-v small{color:var(--muted);font-size:11px;margin-top:2px}
+.vs-v.us{font-weight:700;color:var(--accent)}
+.vs-c{display:grid;place-items:center;min-height:40px;border-radius:10px;font-size:11px;line-height:1.15;text-align:center;padding:4px;border:1px solid var(--line);background:var(--panel);color:var(--fg)}
+.vs-c.us{background:color-mix(in srgb,var(--accent) 12%,var(--panel));border-color:color-mix(in srgb,var(--accent) 35%,var(--line));font-weight:600}
+.vs-c.hot{background:var(--heat4);border-color:var(--heat4);color:#fff;font-weight:700}
+.vs-c.clash{background:var(--heat2);border-color:var(--heat2);color:#fff;font-weight:700}
+.vs-c.none{color:var(--muted);background:transparent;border-style:dashed}
 /* ciblage theatro */
 .tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 @media(max-width:800px){.tgrid{grid-template-columns:1fr 1fr}}
@@ -237,7 +246,7 @@ footer{color:var(--muted);font-size:13px;line-height:1.5}
   <div class="chapter"><span class="num">01</span><h2>Où sont les touristes</h2><p>La ville, hôtel par hôtel, et qui dort où cette semaine.</p></div>
   <div class="card radar-hero"><div class="radar-row"><div class="radar" aria-hidden="true"><div class="cross"></div><div class="sweep"></div><i style="--x:62%;--y:38%"></i><i style="--x:30%;--y:60%"></i><i style="--x:70%;--y:70%"></i><i style="--x:45%;--y:25%"></i><i style="--x:22%;--y:30%"></i><i style="--x:78%;--y:55%"></i></div><div class="radar-txt"><b>Radar actif</b><span class="big-t">Tout Marrakech est capté</span><span id="radar-clock"></span><span>Hôtels, quartiers et arrivées captés en continu · prochaine mise à jour complète demain 7 h</span></div></div></div>
   <div class="card night"><h2>Affluence estimée jusqu'au 31 octobre <span class="eyebrow est" style="margin-left:8px">estimation en % · 100 % = soirée pleine</span></h2>
-    <p class="night-sub">Pour chaque soir à venir : touristes en ville (arrivées des 4 derniers jours), vacances scolaires France et Royaume-Uni, météo prévue (7 jours), événements annoncés en ville, jour de la semaine propre à chaque établissement, pression de la concurrence, et distance du centre (Nommos Pool et Lalala, route de l'Ourika, comptés à 65 % du potentiel du 555 et du Sky 5 à l'Hivernage).</p>
+    <p class="night-sub">Pour chaque soir à venir : touristes en ville (arrivées des 4 derniers jours), vacances scolaires France et Royaume-Uni, météo prévue (7 jours), événements annoncés en ville, jour de la semaine propre à chaque établissement, pression de la concurrence (soirées datées de Theatro), et distance du centre (Nommos Pool et Lalala, route de l'Ourika, comptés à 65 % du potentiel du 555 et du Sky 5 à l'Hivernage).</p>
     <div class="nightgrid" id="nightGrid"></div>
     <div class="night-best" id="nightBest"></div>
     <div class="hol" id="holBar"></div>
@@ -315,6 +324,14 @@ footer{color:var(--muted);font-size:13px;line-height:1.5}
       <div><b>Annonce anglaise · 8 oct. · Instagram + WhatsApp</b><img src="ad-uk.jpg" alt="Annonce Theatro en anglais : Theatro's month is locked and loaded, bouton WhatsApp" style="width:100%;border-radius:6px;margin:6px 0">« Theatro's month is locked and loaded! Full October line-up now live. Table bookings via WhatsApp ». Réservation directe par WhatsApp, 22–45 ans. <a href="https://www.facebook.com/ads/library/?id=1119132437156062" target="_blank" rel="noopener">Voir l'annonce</a></div>
       <div><b>Portée réelle de l'annonce anglaise</b><img src="ad-uk-reach.jpg" alt="Panneau de transparence : Royaume-Uni, 22-45 ans, couverture 50" style="width:100%;border-radius:6px;margin:6px 0">Royaume-Uni : <span class="big">50</span> personnes · Union européenne : <span class="big">187</span> (surtout Allemagne). Theatro parle anglais, mais sa campagne export est minuscule. Sa force est au Maroc, sur ses 196 000 abonnés Facebook et 108 000 Instagram.</div>
     </div></div>
+  <div class="card vs"><h2>Qui joue contre nous, du 17 au 31 octobre <span class="eyebrow" style="margin-left:8px">programmes publiés sur Instagram · relevé 16 oct.</span></h2>
+    <p class="night-sub">Ligne du haut : notre programme hebdomadaire du 555. En dessous, chaque concurrent avec ses soirées datées. Rouge = tête d'affiche en face de nous ; orange = même concept le même soir (Ladies Night du mardi). Un point = rien d'annoncé publiquement ce soir-là.</p>
+    <div class="nightgrid" id="vsGrid"></div>
+    <div class="grid2" style="margin-top:14px;align-items:start">
+      <div><b class="eyebrow">Preuve · programme Theatro</b><img src="ad-theatro-lineup.jpg" alt="Post Instagram Theatro : October line-up, dates et DJ" style="width:100%;border-radius:8px;border:1px solid var(--line);margin-top:6px"></div>
+      <div style="font-size:15px;color:var(--muted)"><b style="color:var(--fg)">Lecture.</b> Theatro a un calendrier public clair : DJ invité les samedis 17 et 31, HSBO vendredi 23, et un week-end Halloween « Black Flag » du 29 oct. au 1er nov. Sa Ladies Night du mardi 20 tombe exactement sur la nôtre. Babouchka, Eden et The Circle n'ont rien daté publiquement pour la période. <b style="color:var(--fg)">Décision :</b> annoncer nos têtes d'affiche des 17, 23 et 31 avant eux, et sortir le visuel Halloween 555 / Secret Room avant le 26.</div>
+    </div>
+  </div>
   <div class="card target-card"><h2>Qui Theatro cible exactement <span class="eyebrow" style="margin-left:8px">preuve · annonce « Madame T » · depuis le 7 oct.</span></h2>
     <div class="tgrid">
       <div class="tcell"><span class="tl">Lieu ciblé</span><span class="tv">Paris</span><span class="ts">ville incluse, aucune autre zone</span></div>
@@ -421,9 +438,10 @@ const NI=(function(){
   const outdoor={"Nommos Pool":1,"Lalala":1,"Sky 5":.5};
   const dist={"Nommos Pool":.65,"Lalala":.65}; // route de l'Ourika, à 20 min du centre : navette ou taxi obligatoire, moins de clients spontanés que 555 / Sky 5 (Hivernage)
   const wx=(v,d)=>{const w=WX[String(d)];if(!w)return 1;const [t,r]=w;let f=t>=28?1:t>=25?.92:t>=22?.8:.65;if(r>=40)f*=.8;const o=outdoor[v]||0;return 1-(1-f)*o;};
-  const comp={"555 Marrakech":[0,0,0,0,0,-6,-6],"Sky 5":[0,0,0,0,0,-3,-3],"Secret Room":[0,0,0,0,0,-6,-6]};
+  const thea={17:-6,20:-4,23:-6,29:-5,30:-6,31:-8}; // soirées datées de Theatro (programme public) : pression sur nos clubs ce soir-là
+  const comp={"555 Marrakech":[0,0,0,0,0,-3,-3],"Sky 5":[0,0,0,0,0,-2,-2],"Secret Room":[0,0,0,0,0,-3,-3]};
   const ev=(v,d)=>EV.filter(e=>d>=e[1]&&d<=e[2]).reduce((s,e)=>s+(e[4][kind[v]]||0),0);
-  const rows=Object.keys(prof).map(v=>[v,days.map(([lab,d,w])=>{const base=inTown(d)*hol(d)*prof[v][w]*wx(v,d)*(dist[v]||1)*70;const c=(comp[v]||[0,0,0,0,0,0,0])[w];return Math.max(5,Math.min(100,Math.round(base+c+ev(v,d))));})]);
+  const rows=Object.keys(prof).map(v=>[v,days.map(([lab,d,w])=>{const base=inTown(d)*hol(d)*prof[v][w]*wx(v,d)*(dist[v]||1)*70;const c=(comp[v]||[0,0,0,0,0,0,0])[w]+(kind[v]==="clubs"?(thea[d]||0):0);return Math.max(5,Math.min(100,Math.round(base+c+ev(v,d))));})]);
   return {days,rows};
 })();
 (function(){const g=$("#nightGrid"),b=$("#nightBest"),hb=$("#holBar"),el=$("#evList");if(!g)return;const col=v=>v>=80?'var(--heat4)':v>=65?'var(--heat3)':v>=50?'var(--heat2)':'var(--heat1)';
@@ -459,6 +477,23 @@ $("#wk").addEventListener("input",e=>{wk=+e.target.value;render();});
 $("#lay-hotels").onclick=()=>{layerH=true;$("#lay-hotels").setAttribute("aria-pressed",true);$("#lay-zones").setAttribute("aria-pressed",false);drawMap();};
 $("#lay-zones").onclick=()=>{layerH=false;$("#lay-hotels").setAttribute("aria-pressed",false);$("#lay-zones").setAttribute("aria-pressed",true);drawMap();};
 // ---------- ciblage theatro
+// ---------- qui joue contre nous (programmes publiés sur Instagram, relevés le 16 oct.)
+const VS={
+  days:(()=>{const dn=["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"];const a=[];for(let d=17;d<=31;d++){a.push([dn[new Date(2026,9,d).getDay()]+" "+d,d,new Date(2026,9,d).getDay()]);}return a;})(),
+  us:{name:"555 Marrakech (programme hebdo publié le 12 sept.)",week:["Takeover Sundays","Antidote","Ladies Night","Midweek","Fabulous","Friday Therapy · DJ Rebelle, DJ AD, MC Keef","Guest DJ"]},
+  rows:[
+   ["Theatro",{17:["ALVA DJ · DJ set","hot"],20:["Ladies Night ft. ALVA","clash"],23:["HSBO · DJ set","hot"],29:["Halloween WKD · Black Flag","hot"],30:["Halloween WKD · Black Flag","hot"],31:["SANLOCO · DJ set + Halloween","hot"]},"Programme d'octobre publié le 1er oct. · dernier post : 13 oct."],
+   ["Babouchka",{},"Aucune date publiée : posts d'ambiance seulement · dernier post : 15 oct."],
+   ["Eden",{},"Rien d'annoncé depuis le 11 sept."],
+   ["The Circle",{},"Rien d'annoncé depuis le 13 sept."]
+  ]
+};
+(function(){const g=$("#vsGrid");if(!g)return;g.style.gridTemplateColumns=`minmax(120px,1.3fr) repeat(${VS.days.length},1fr)`;
+  const head=`<div class="ng-h"></div>`+VS.days.map(([l])=>`<div class="ng-h">${l}</div>`).join("");
+  const us=`<div class="vs-v us">555 · nous</div>`+VS.days.map(([,d,w])=>`<div class="vs-c us" title="${VS.us.week[w]}">${VS.us.week[w].split(" · ")[0]}</div>`).join("");
+  const rows=VS.rows.map(([n,ev,note])=>`<div class="vs-v"><b>${n}</b><small>${note}</small></div>`+VS.days.map(([,d])=>{const e=ev[d];return e?`<div class="vs-c ${e[1]}" title="${n} · ${e[0]}">${e[0]}</div>`:`<div class="vs-c none">·</div>`;}).join("")).join("");
+  g.innerHTML=head+us+rows;})();
+
 (function(){const D=[["18-24",19,11],["25-34",69,26],["35-44",16,4],["45-54",1,0]];const s=$("#tgChart");if(!s)return;const mx=70,x0=84,bw=130;s.innerHTML=D.map(([a,hm,f],i)=>{const y=14+i*38;return `<g><text x="${x0-8}" y="${y+16}" text-anchor="end" font-size="13" font-weight="600" fill="var(--fg)">${a} ans</text><rect x="${x0}" y="${y}" width="${hm/mx*bw}" height="22" rx="4" fill="var(--accent2)" fill-opacity=".85"/><text x="${x0+hm/mx*bw+6}" y="${y+16}" font-size="12" fill="var(--fg)">${hm} H</text><rect x="${x0+170}" y="${y}" width="${Math.max(f/mx*bw,2)}" height="22" rx="4" fill="var(--accent)" fill-opacity=".85"/><text x="${x0+176+Math.max(f/mx*bw,2)}" y="${y+16}" font-size="12" fill="var(--fg)">${f} F</text></g>`;}).join("")+`<text x="${x0}" y="166" font-size="11" fill="var(--muted)">Hommes 105 (71 %) · Femmes 41 (28 %) · France 140, Espagne 7</text>`;})();
 // ---------- aéroport
 const HR=[[0,158,0,0,0,0],[6,158,0,0,196,0],[7,638,161,0,158,316],[8,153,0,0,0,0],[9,0,0,0,0,0],[10,322,0,0,0,0],[11,480,153,0,0,94],[12,319,0,161,319,153],[13,628,0,0,0,128],[14,314,0,153,0,153],[15,472,0,0,0,722],[16,153,161,0,0,502],[17,0,0,314,161,311],[18,161,475,319,196,161],[19,0,158,641,161,319],[20,322,161,161,158,161],[21,314,314,0,0,416],[22,311,0,0,322,252],[23,0,161,0,0,161]];
