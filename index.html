@@ -1,0 +1,478 @@
+<title>Radar Marrakech</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one scrolling story. Home bubbles, then five chapters that reveal on scroll; sticky chapter nav + progress bar. Young, light, vivid. */
+:root{
+  --bg:#f5f6fb; --panel:#ffffff; --line:#e6e8f0; --fg:#141826; --muted:#5f6680;
+  --accent:#ff5c7a; --accent2:#6c5cff; --grad:linear-gradient(135deg,#ff5c7a,#ff9a3d 55%,#6c5cff);
+  --heat1:#4f8fc0; --heat2:#f0a63a; --heat3:#ff6b4a; --heat4:#e0245e; --elh:#ff9a3d; --comp:#8b93a7; --good:#1fbf8f; --bad:#e0245e;
+  --fr:#6c5cff; --es:#ff9a3d; --uk:#ff5c7a; --it:#1fbf8f; --ot:#b5bbcc;
+  --display:"Bricolage Grotesque",system-ui,sans-serif; --body:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0e1020;--panel:#171a2e;--line:#272b45;--fg:#f1f2fa;--muted:#9aa1be;--comp:#6b7390;--ot:#525a78;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1020;--panel:#171a2e;--line:#272b45;--fg:#f1f2fa;--muted:#9aa1be;--comp:#6b7390;--ot:#525a78;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 60px}
+.progress{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:4px;background:transparent;z-index:20}
+.progress i{display:block;height:100%;width:0;background:var(--grad)}
+.wrap{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);padding:14px 0 10px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 18px;border-bottom:1px solid var(--line)}
+h1{font-family:var(--display);font-size:clamp(22px,3vw,30px);font-weight:700;letter-spacing:-.02em;margin:0;line-height:1;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-family:var(--display);font-size:22px;font-weight:700;margin:0 0 10px;letter-spacing:-.01em}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.sub{color:var(--muted);font-size:14px;margin:4px 0 0}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{font-family:var(--display);font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
+nav button[aria-selected="true"]{background:var(--grad);color:#fff;border-color:transparent}
+nav button:focus-visible,.chip:focus-visible,input:focus-visible,.zb:focus-visible,.bubble:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+section.tab{display:flex;flex-direction:column;gap:18px;padding-top:10px}
+section.tab[hidden]{display:none}
+.chapter{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.chapter .num{font-family:var(--display);font-size:64px;font-weight:700;line-height:.9;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.chapter h2{font-size:clamp(26px,4vw,38px);margin:0}
+.chapter p{flex-basis:100%;margin:4px 0 0;font-size:18px;color:var(--muted);max-width:720px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 20px;min-width:0;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:var(--grad)}
+.kpi .v{font-family:var(--display);font-size:40px;font-weight:700;line-height:1.05;font-variant-numeric:tabular-nums;margin-top:6px}
+.kpi .l{color:var(--fg);font-size:17px;line-height:1.35;margin-top:8px}
+.kpi .t{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-top:10px}
+.t.real{color:var(--good)} .t.est{color:var(--accent)}
+.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(290px,1fr);gap:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:900px){.grid,.grid2{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 20px;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-size:14px;background:transparent;color:var(--fg);cursor:pointer;font-family:var(--body)}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.wk{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.wk label{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+input[type=range]{width:200px;accent-color:var(--accent)}
+.week{font-family:var(--display);font-weight:700;font-size:18px;min-width:140px;font-variant-numeric:tabular-nums}
+.mapbox{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#e8e4da;touch-action:none}
+.mapbox svg{display:block;width:100%;height:auto;cursor:grab}
+.mapbox svg.drag{cursor:grabbing}
+.map text{font-family:var(--body);paint-order:stroke;stroke:rgba(255,255,255,.9);stroke-width:3px;stroke-linejoin:round}
+.map text.num{stroke:none}
+.zoom{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:4px}
+.zb{width:36px;height:36px;border-radius:10px;border:1px solid #ccc;background:#fff;color:#111;font-size:20px;font-weight:700;cursor:pointer;line-height:1}
+.legend{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;font-size:14px;color:var(--muted);margin-top:10px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:4px}
+.sw.d{border-radius:2px;transform:rotate(45deg);width:10px;height:10px}
+svg.chart{display:block;width:100%;height:auto}
+table{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.n{text-align:right}
+.bar{height:10px;border-radius:5px;background:var(--heat1)}
+.tag{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600}
+.tag.full{background:color-mix(in srgb,var(--heat4) 16%,transparent);color:var(--heat4)}
+.tag.few{background:color-mix(in srgb,var(--heat3) 16%,transparent);color:var(--heat3)}
+.tag.open{background:color-mix(in srgb,var(--heat1) 16%,transparent);color:var(--heat1)}
+.tag.est{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+.target{display:grid;gap:10px}
+.target div{border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:16px;line-height:1.5;background:var(--panel)}
+.target b,.proof > div > b,.proof b.tag{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:4px}
+.proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.proof > div{border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.5;background:var(--panel)}
+.proof a{color:var(--accent)}
+.big{font-family:var(--display);font-size:30px;font-weight:700;line-height:1}
+footer{color:var(--muted);font-size:13px;line-height:1.5}
+/* accueil */
+.hero{padding:30px 0 0}
+.hero h2{font-family:var(--display);font-size:clamp(34px,6vw,64px);line-height:.98;letter-spacing:-.03em;margin:0;max-width:900px}
+.hero h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.intro{font-size:19px;line-height:1.5;max-width:720px;color:var(--muted);margin:14px 0 0}
+.home{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:22px;margin-top:26px}
+.bubble{aspect-ratio:1;border-radius:50%;background:var(--panel);border:1px solid var(--line);box-shadow:0 14px 40px rgba(20,24,38,.10);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:22px;cursor:pointer;color:var(--fg);font-family:var(--body);max-width:280px;margin:0 auto;width:100%;position:relative;transition:transform .2s ease,box-shadow .2s ease}
+.bubble::before{content:"";position:absolute;inset:-2px;border-radius:50%;background:var(--grad);z-index:-1;opacity:0;transition:opacity .2s}
+.bubble:hover,.bubble:focus-visible{transform:translateY(-6px) scale(1.03);box-shadow:0 22px 50px rgba(108,92,255,.22)}
+.bubble:hover::before,.bubble:focus-visible::before{opacity:1}
+.bubble .n{font-family:var(--display);font-size:clamp(36px,4.6vw,50px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.bubble .s{font-size:17px;line-height:1.3;color:var(--fg);margin-top:8px;max-width:200px}
+.bubble .h{font-family:var(--display);font-size:18px;font-weight:700;margin-top:12px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.next{display:flex;justify-content:center;padding:6px 0 0}
+.next a{color:var(--muted);text-decoration:none;font-size:15px;display:inline-flex;align-items:center;gap:8px}
+.next a::after{content:"↓";display:inline-block;animation:bounce 1.6s infinite}
+/* ciblage theatro */
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:800px){.tgrid{grid-template-columns:1fr 1fr}}
+.tcell{display:flex;flex-direction:column;gap:2px;padding:14px;border-radius:14px;background:color-mix(in srgb,var(--accent2) 8%,var(--panel));border:1px solid color-mix(in srgb,var(--accent2) 25%,var(--line))}
+.tcell .tl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tcell .tv{font-family:var(--display);font-size:28px;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tcell .ts{font-size:14px;color:var(--muted)}
+/* avis par pôle */
+.pole-h{display:flex;align-items:center;gap:12px;margin:18px 0 10px;padding-top:14px;border-top:1px dashed var(--line)}
+.pole-h:first-child{border-top:0;padding-top:0;margin-top:4px}
+.pole-h .num{font-family:var(--display);font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pole-h h3{margin:0;font-size:22px}
+.pole-h .pole-s{margin-left:auto;font-size:15px;color:var(--muted)}
+/* avis 7 jours */
+.w7{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:6px 0 10px;font-size:15px;color:var(--muted)}
+.w7 .pm b{font-family:var(--body);font-size:14px;letter-spacing:0;text-transform:none;display:inline;margin:0}
+.w7 .n{font-family:var(--display);font-size:26px;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.w7 .pm{margin-left:auto}
+.lastrev{border-radius:12px;padding:10px 12px;margin:0 0 10px;background:color-mix(in srgb,var(--muted) 10%,transparent);border-left:4px solid var(--muted)}
+.lastrev.ok{background:color-mix(in srgb,var(--good) 12%,transparent);border-left-color:var(--good)}
+.lastrev.ko{background:color-mix(in srgb,var(--bad) 12%,transparent);border-left-color:var(--bad)}
+.lr-h{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono)}
+.lr-h .stars{color:#f5a623;font-size:16px;letter-spacing:0;font-family:var(--body)}
+.lr-t{margin-top:4px;font-size:15px;color:var(--fg);line-height:1.4}
+/* bulles de couche */
+.chip.rb{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:6px 14px 6px 6px;font-weight:600}
+.chip.rb .rb-n{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--grad);color:#fff;font-family:var(--display);font-size:13px}
+.chip.rb[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+/* radar */
+.radar-hero{display:flex;align-items:center;background:linear-gradient(135deg,color-mix(in srgb,var(--good) 10%,var(--panel)),var(--panel));border:1px solid color-mix(in srgb,var(--good) 35%,var(--line))}
+.radar-hero .radar-row{margin-top:0;gap:24px}
+.radar-hero .radar-txt .big-t{font-size:28px}
+.radar-row{display:flex;gap:14px;align-items:center;margin-top:12px}
+.radar{position:relative;width:170px;height:170px;border-radius:50%;flex:none;background:radial-gradient(circle,color-mix(in srgb,var(--good) 18%,transparent),transparent 70%);border:1px solid color-mix(in srgb,var(--good) 45%,transparent);overflow:hidden}
+.radar::before,.radar::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid color-mix(in srgb,var(--good) 30%,transparent)}
+.radar::before{inset:20%}.radar::after{inset:40%}
+.radar .cross{position:absolute;inset:0}.radar .cross::before,.radar .cross::after{content:"";position:absolute;background:color-mix(in srgb,var(--good) 30%,transparent)}.radar .cross::before{left:50%;top:0;bottom:0;width:1px}.radar .cross::after{top:50%;left:0;right:0;height:1px}
+.radar .lbl{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--good);text-transform:uppercase;white-space:nowrap}
+.radar .sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,color-mix(in srgb,var(--good) 75%,transparent),transparent 30%);animation:spin 2.4s linear infinite}
+.radar i{position:absolute;left:var(--x);top:var(--y);width:9px;height:9px;border-radius:50%;background:var(--good);box-shadow:0 0 0 0 color-mix(in srgb,var(--good) 60%,transparent);animation:blip 2.4s ease-out infinite}
+.radar i:nth-of-type(2){animation-delay:.4s}.radar i:nth-of-type(3){animation-delay:.8s}.radar i:nth-of-type(4){animation-delay:1.2s}.radar i:nth-of-type(5){animation-delay:1.6s}.radar i:nth-of-type(6){animation-delay:2s}
+.radar.small{width:150px;height:150px}
+.radar-txt{display:flex;flex-direction:column;gap:4px;font-size:16px;color:var(--muted)}
+.radar-txt .big-t{font-family:var(--display);font-size:22px;font-weight:700;color:var(--fg)}
+.radar-txt b{color:var(--good);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blip{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--good) 60%,transparent)}70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 10px transparent}}
+/* avion */
+.sky{overflow:hidden}
+.sky-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.sky-n{font-family:var(--display);font-size:30px;font-weight:700;margin-top:4px}
+.sky-n span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:44px}
+.sky-s{color:var(--muted);font-size:15px}
+.runway{display:block;width:100%;height:auto;margin-top:6px}
+.runway .plane{animation:land 6s cubic-bezier(.4,0,.2,1) infinite;transform-origin:0 0}
+@keyframes land{0%{transform:translate(-260px,-40px) rotate(8deg);opacity:0}6%{opacity:1}50%{transform:translate(380px,30px) rotate(5deg)}75%{transform:translate(620px,62px) rotate(0)}100%{transform:translate(920px,62px);opacity:0}}
+@keyframes shad{0%{transform:translate(-200px,0);opacity:0}50%{transform:translate(500px,0);opacity:.3}75%{transform:translate(720px,0);opacity:.6}100%{transform:translate(980px,0);opacity:0}}
+.runway .shadow{animation:shad 6s cubic-bezier(.4,0,.2,1) infinite}
+.runway{filter:drop-shadow(0 6px 10px rgba(0,0,0,.12))}
+/* animations : au défilement */
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes growx{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes growy{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.kpi,.card,.bubble,.proof > div,.target > div{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.2,.8,.2,1),transform .6s cubic-bezier(.2,.8,.2,1)}
+.kpi.in,.card.in,.bubble.in,.proof > div.in,.target > div.in{opacity:1;transform:none}
+.bubble.in{animation:float 5s ease-in-out infinite;animation-delay:calc(var(--i)*.6s)}
+.bubble.in:hover{animation-play-state:paused}
+.kpi:nth-child(2),.proof > div:nth-child(2),.target > div:nth-child(2){transition-delay:.08s}.kpi:nth-child(3),.proof > div:nth-child(3),.target > div:nth-child(3){transition-delay:.16s}.kpi:nth-child(4),.proof > div:nth-child(4),.target > div:nth-child(4){transition-delay:.24s}.kpi:nth-child(5){transition-delay:.32s}
+.card svg.chart rect{transform-box:fill-box;transform-origin:left center;transform:scaleX(0)}
+.card svg.chart.vert rect{transform-origin:center bottom;transform:scaleY(0)}
+.card.in svg.chart rect{animation:growx 1s cubic-bezier(.2,.8,.2,1) forwards}
+.card.in svg.chart.vert rect{animation-name:growy}
+.card .bar{transform-origin:left center;transform:scaleX(0)}
+.card.in .bar{animation:growx 1s cubic-bezier(.2,.8,.2,1) forwards}
+.map circle,#venues rect{transform-box:fill-box;transform-origin:center;animation:pop .5s cubic-bezier(.2,.8,.2,1) both}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.kpi,.card,.bubble,.proof > div,.target > div{opacity:1;transform:none}.card svg.chart rect,.card .bar{transform:none}}
+</style>
+
+<div class="wrap">
+<div class="progress" aria-hidden="true"><i id="prog"></i></div>
+<header>
+  <div><div class="eyebrow">ELH Groupe · veille marché</div><h1>Radar Marrakech</h1><p class="sub">Relevé du 15 octobre 2026 · <span style="color:var(--good)">●</span> relevé &nbsp;<span style="color:var(--accent)">●</span> estimation</p></div>
+  <nav role="tablist" aria-label="Sections"><button role="tab" id="tab-h" aria-selected="true">Accueil</button><button role="tab" id="tab-t" aria-selected="false">Où sont les touristes</button><button role="tab" id="tab-a" aria-selected="false">Traçage des arrivées</button><button role="tab" id="tab-c" aria-selected="false">Concurrence</button><button role="tab" id="tab-g" aria-selected="false">Avis Google</button><button role="tab" id="tab-m" aria-selected="false">Facturation Meta</button></nav>
+</header>
+
+<!-- ================= ACCUEIL ================= -->
+<section class="tab hero" id="sec-h">
+  <h2>Ce qui se passe à Marrakech <em>ce matin</em>, en cinq radars.</h2>
+  <p class="intro">Mis à jour chaque jour avant 8 h. Touchez une bulle ou faites défiler : tout est dessous.</p>
+  <div class="home">
+    <button class="bubble" style="--i:0" data-go="t"><span class="n" id="bT">74 %</span><span class="s">de la ville complète ce soir</span><span class="h">Où sont les touristes</span></button>
+    <button class="bubble" style="--i:1" data-go="a"><span class="n" id="bA">15 600</span><span class="s">passagers débarqués aujourd'hui</span><span class="h">Traçage des arrivées</span></button>
+    <button class="bubble" style="--i:2" data-go="c"><span class="n" id="bC">72</span><span class="s">annonces actives chez Theatro</span><span class="h">Concurrence</span></button>
+    <button class="bubble" style="--i:3" data-go="g"><span class="n" id="bG">—</span><span class="s">avis Google sur nos établissements</span><span class="h">Avis Google</span></button>
+    <button class="bubble" style="--i:4" data-go="m"><span class="n" id="bM">—</span><span class="s">dépensés hier en publicité</span><span class="h">Facturation Meta</span></button>
+  </div>
+  <div class="next"><a href="#" data-go="t">Commencer par la carte</a></div>
+</section>
+
+<!-- ================= TOURISTES ================= -->
+<section class="tab" id="sec-t" hidden>
+  <div class="chapter"><span class="num">01</span><h2>Où sont les touristes</h2><p>La ville, hôtel par hôtel, et qui dort où cette semaine.</p></div>
+  <div class="card radar-hero"><div class="radar-row"><div class="radar" aria-hidden="true"><div class="cross"></div><div class="sweep"></div><i style="--x:62%;--y:38%"></i><i style="--x:30%;--y:60%"></i><i style="--x:70%;--y:70%"></i><i style="--x:45%;--y:25%"></i><i style="--x:22%;--y:30%"></i><i style="--x:78%;--y:55%"></i></div><div class="radar-txt"><b>Radar actif</b><span class="big-t">Tout Marrakech est capté</span><span id="radar-clock"></span><span>Hôtels, quartiers et arrivées captés en continu · prochaine mise à jour complète demain 7 h</span></div></div></div>
+  <div class="kpis">
+    <div class="kpi"><div class="v">74 %</div><div class="l">des 9 700 hébergements de la ville complets ce soir</div><div class="t real">relevé 16 h</div></div>
+    <div class="kpi"><div class="v">12 / 26</div><div class="l">grands hôtels complets ce soir</div><div class="t real">relevé 16 h</div></div>
+    <div class="kpi"><div class="v">11 363</div><div class="l">logements Airbnb · 48 % occupés en octobre · 38 % de Français</div><div class="t real">marché 12 mois</div></div>
+    <div class="kpi"><div class="v" id="kTotal">—</div><div class="l">visiteurs, semaine sélectionnée</div><div class="t est">estimation</div></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="chips lay" role="group" aria-label="Couche"><button class="chip rb" id="lay-hotels" aria-pressed="true"><span class="rb-n">27</span>Hôtels</button><button class="chip rb" id="lay-zones" aria-pressed="false"><span class="rb-n">9</span>Pression</button></div>
+        <div class="wk"><label for="wk">Semaine</label><input type="range" id="wk" min="0" max="7" value="0" step="1" aria-label="Semaine affichée"><div class="week" id="wkLabel"></div></div>
+      </div>
+      <div class="mapbox" id="mapbox">
+        <svg class="map" viewBox="0 0 1512 799" role="img" aria-label="Carte de Marrakech : taux de remplissage des hôtels, pression par quartier, nos lieux et les concurrents" id="map">
+          <image href="map.jpg" x="0" y="0" width="1512" height="799" preserveAspectRatio="none"/>
+          <rect x="0" y="0" width="1512" height="799" fill="#0b1020" opacity=".06"/>
+          <g id="zones"></g><g id="hotels"></g><g id="venues"></g>
+        </svg>
+        <div class="zoom"><button class="zb" id="zin" aria-label="Zoom avant">+</button><button class="zb" id="zout" aria-label="Zoom arrière">−</button><button class="zb" id="zreset" aria-label="Vue d'ensemble" style="font-size:13px">⌂</button></div>
+      </div>
+      <div class="legend"><span><i class="sw" style="background:var(--heat1)"></i>&lt; 60 %</span><span><i class="sw" style="background:var(--heat2)"></i>60–75 %</span><span><i class="sw" style="background:var(--heat3)"></i>75–90 %</span><span><i class="sw" style="background:var(--heat4)"></i>&gt; 90 % · complet</span><span><i class="sw d" style="background:var(--elh)"></i>ELH</span><span><i class="sw" style="background:var(--comp)"></i>concurrent</span><span>Molette ou + / − pour zoomer, glisser pour déplacer</span></div>
+      <div id="alert" style="margin-top:8px;font-size:15px"></div>
+    </div>
+    <aside style="display:flex;flex-direction:column;gap:14px;min-width:0">
+      <div class="card"><h2>Qui est en ville</h2><table id="countries"><tbody></tbody></table></div>
+      <div class="card"><h2>8 semaines devant</h2><svg class="chart" viewBox="0 0 400 190" role="img" aria-label="Visiteurs estimés par semaine sur 8 semaines" id="curve"></svg></div>
+      <div class="card"><h2>La ville se remplit</h2><svg class="chart vert" viewBox="0 0 400 165" role="img" aria-label="Part des hébergements complets par date" id="bkchart"></svg></div>
+    </aside>
+  </div>
+  <div class="card"><h2>Hôtels : taux de remplissage <span id="hotelTot" style="font-family:var(--body);font-weight:400;font-size:13px;color:var(--muted)"></span></h2>
+    <div style="overflow-x:auto"><table id="hotelTable"><thead><tr><th>Hôtel</th><th>Quartier</th><th></th><th class="n">Taux</th><th>État ce soir</th></tr></thead><tbody></tbody></table></div></div>
+  <div class="next"><a href="#" data-go="a">Voir qui arrive aujourd'hui</a></div>
+</section>
+
+<!-- ================= TRAÇAGE ================= -->
+<section class="tab" id="sec-a" hidden>
+  <div class="chapter"><span class="num">02</span><h2>Traçage des arrivées</h2><p>Qui atterrit aujourd'hui, de quel pays, à quelle heure.</p></div>
+  <div class="kpis">
+    <div class="kpi"><div class="v">101</div><div class="l">vols à l'arrivée aujourd'hui, jeudi 15 octobre</div><div class="t real">programme du jour</div></div>
+    <div class="kpi"><div class="v">≈ 15 600</div><div class="l">passagers débarqués aujourd'hui</div><div class="t real">sièges × 85 %</div></div>
+    <div class="kpi"><div class="v">32 %</div><div class="l">viennent de France · Espagne 17 % · Royaume-Uni 12 %</div><div class="t real">programme du jour</div></div>
+    <div class="kpi"><div class="v">≈ 108 000</div><div class="l">passagers attendus cette semaine (13 → 19 oct.)</div><div class="t est">estimation</div></div>
+  </div>
+  <div class="card sky"><div class="sky-top"><div><b class="eyebrow">En direct</b><div class="sky-n"><span id="skyCount">0</span> avions posés aujourd'hui</div><div class="sky-s">Un avion atterrit en moyenne toutes les 9 minutes entre 6 h et 19 h.</div></div><div class="radar small" aria-hidden="true"><div class="cross"></div><div class="sweep"></div><i style="--x:55%;--y:40%"></i><i style="--x:35%;--y:65%"></i><i style="--x:68%;--y:68%"></i><i style="--x:28%;--y:30%"></i></div></div><svg class="runway" viewBox="0 0 900 170" aria-hidden="true"><defs><linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#cfd3e0"/><stop offset="1" stop-color="#6b7290"/></linearGradient><linearGradient id="pg" x1="0" x2="1"><stop offset="0" stop-color="#ff5c7a"/><stop offset="1" stop-color="#6c5cff"/></linearGradient></defs><rect x="30" y="134" width="840" height="14" rx="7" fill="url(#rg)"/><g fill="#fff"><rect x="70" y="140" width="28" height="3"/><rect x="140" y="140" width="28" height="3"/><rect x="210" y="140" width="28" height="3"/><rect x="280" y="140" width="28" height="3"/><rect x="350" y="140" width="28" height="3"/><rect x="420" y="140" width="28" height="3"/><rect x="490" y="140" width="28" height="3"/><rect x="560" y="140" width="28" height="3"/><rect x="630" y="140" width="28" height="3"/><rect x="700" y="140" width="28" height="3"/><rect x="770" y="140" width="28" height="3"/></g><ellipse class="shadow" cx="0" cy="146" rx="60" ry="5" fill="rgba(0,0,0,.25)"/><g class="plane"><g transform="translate(-10,0) scale(1.3)"><path d="M18 9 L10 -16 L30 -16 L54 9 Z" fill="#3b3f5c"/><path d="M14 24 L2 33 L28 33 L42 24 Z" fill="#3b3f5c"/><path d="M12 20 Q12 8 30 8 L132 8 Q158 10 168 22 Q158 32 132 32 L30 32 Q12 32 12 20 Z" fill="url(#pg)"/><path d="M150 11 Q162 14 166 21 L146 21 Z" fill="#1e2238" opacity=".85"/><g fill="#fff" opacity=".9"><circle cx="60" cy="17" r="2.6"/><circle cx="72" cy="17" r="2.6"/><circle cx="84" cy="17" r="2.6"/><circle cx="96" cy="17" r="2.6"/><circle cx="108" cy="17" r="2.6"/><circle cx="120" cy="17" r="2.6"/><circle cx="132" cy="17" r="2.6"/></g><path d="M74 26 L34 52 L60 52 L108 26 Z" fill="#2a2f45"/><rect x="66" y="40" width="34" height="14" rx="7" fill="#3b3f5c"/><rect x="62" y="43" width="8" height="8" rx="3" fill="#ff5c7a"/><g fill="#1e2238"><rect x="50" y="32" width="3" height="18"/><circle cx="51.5" cy="52" r="4"/><rect x="140" y="30" width="3" height="18"/><circle cx="141.5" cy="50" r="4"/></g></g></g></svg></div>
+  <div class="grid2">
+    <div class="card"><h2>Aujourd'hui, heure par heure</h2><svg class="chart vert" viewBox="0 0 640 260" role="img" aria-label="Passagers débarqués par heure et par pays" id="hourChart"></svg>
+      <div class="legend"><span><i class="sw" style="background:var(--fr)"></i>France</span><span><i class="sw" style="background:var(--es)"></i>Espagne</span><span><i class="sw" style="background:var(--uk)"></i>Royaume-Uni</span><span><i class="sw" style="background:var(--it)"></i>Italie</span><span><i class="sw" style="background:var(--ot)"></i>Autres</span></div></div>
+    <div class="card"><h2>Aujourd'hui, par pays</h2><table id="dayCountries"><thead><tr><th>Pays</th><th></th><th class="n">Vols</th><th class="n">Passagers</th></tr></thead><tbody></tbody></table></div>
+  </div>
+  <div class="card"><h2>La semaine, jour par jour <span style="font-family:var(--body);font-weight:400;font-size:13px;color:var(--muted)">· jeudi relevé, autres jours estimés d'après le rythme habituel de la semaine</span></h2>
+    <svg class="chart vert" viewBox="0 0 900 230" role="img" aria-label="Passagers par jour et par pays sur la semaine" id="weekChart"></svg></div>
+  <div class="card"><h2>Ce que ça change pour nous</h2><div class="target">
+    <div><b>Pics d'arrivée</b> 8 h–9 h, 12 h–13 h, 16 h–17 h. Les stories de 18 h touchent des gens qui viennent de poser leurs valises.</div>
+    <div><b>Vendredi et samedi</b> ≈ 20 % de passagers en plus que le jeudi : les deux soirs à ne jamais laisser sans programmation forte.</div>
+    <div><b>Par pays</b> Un tiers de Français chaque jour, puis Espagnols et Britanniques. Le contenu anglais et espagnol doit sortir le jour même des gros vols.</div></div></div>
+  <div class="next"><a href="#" data-go="c">Voir la concurrence</a></div>
+</section>
+
+<!-- ================= CONCURRENCE ================= -->
+<section class="tab" id="sec-c" hidden>
+  <div class="chapter"><span class="num">03</span><h2>Concurrence</h2><p>Ce que font les autres, preuves à l'appui.</p></div>
+  <div class="kpis">
+    <div class="kpi"><div class="v">72</div><div class="l">annonces actives de Theatro cette semaine · tous les autres clubs : 0</div><div class="t real">relevé 14 oct.</div></div>
+    <div class="kpi"><div class="v">≈ 240</div><div class="l">personnes touchées hors Maroc par l'annonce anglaise (Royaume-Uni 50, UE 187) ; annonce « France » : 1 seule personne</div><div class="t real">relevé 16 oct.</div></div>
+    <div class="kpi"><div class="v">3,8 vs 4,4</div><div class="l">555 et Secret Room contre Theatro (note Google)</div><div class="t real">relevé 14 oct.</div></div>
+    <div class="kpi"><div class="v">4,8</div><div class="l">Babouchka, le club le mieux noté de la ville (4 286 avis)</div><div class="t real">relevé 14 oct.</div></div>
+  </div>
+  <div class="card"><h2>Preuves : la campagne Theatro</h2>
+    <div class="proof">
+      <div><b>Vague principale · 9 oct. · Instagram</b><img src="ad-fr.jpg" alt="Annonce Theatro : vidéos de soirée, texte This is Theatro Marrakech, open 7/7 from 11:30pm" style="width:100%;border-radius:6px;margin:6px 0">« This is Theatro Marrakech. Open 7/7 from 11:30pm ». ≈ 60 variantes vidéo, ciblage déclaré France 25–45 ans, mais 1 seule personne touchée en Europe : la diffusion réelle est au Maroc. <a href="https://www.facebook.com/ads/library/?id=2309243173181451" target="_blank" rel="noopener">Voir l'annonce</a></div>
+      <div><b>Annonce anglaise · 8 oct. · Instagram + WhatsApp</b><img src="ad-uk.jpg" alt="Annonce Theatro en anglais : Theatro's month is locked and loaded, bouton WhatsApp" style="width:100%;border-radius:6px;margin:6px 0">« Theatro's month is locked and loaded! Full October line-up now live. Table bookings via WhatsApp ». Réservation directe par WhatsApp, 22–45 ans. <a href="https://www.facebook.com/ads/library/?id=1119132437156062" target="_blank" rel="noopener">Voir l'annonce</a></div>
+      <div><b>Portée réelle de l'annonce anglaise</b><img src="ad-uk-reach.jpg" alt="Panneau de transparence : Royaume-Uni, 22-45 ans, couverture 50" style="width:100%;border-radius:6px;margin:6px 0">Royaume-Uni : <span class="big">50</span> personnes · Union européenne : <span class="big">187</span> (surtout Allemagne). Theatro parle anglais, mais sa campagne export est minuscule. Sa force est au Maroc, sur ses 196 000 abonnés Facebook et 108 000 Instagram.</div>
+    </div></div>
+  <div class="card target-card"><h2>Qui Theatro cible exactement <span class="eyebrow" style="margin-left:8px">preuve · annonce « Madame T » · depuis le 7 oct.</span></h2>
+    <div class="tgrid">
+      <div class="tcell"><span class="tl">Lieu ciblé</span><span class="tv">Paris</span><span class="ts">ville incluse, aucune autre zone</span></div>
+      <div class="tcell"><span class="tl">Tranche d'âge</span><span class="tv">23 – 45 ans</span><span class="ts">choisie par l'annonceur</span></div>
+      <div class="tcell"><span class="tl">Genre</span><span class="tv">Tous</span><span class="ts">hommes et femmes</span></div>
+      <div class="tcell"><span class="tl">Placements</span><span class="tv">5 apps</span><span class="ts">Facebook · Instagram · Messenger · WhatsApp · Threads</span></div>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div><b>Qui a vraiment vu l'annonce (147 personnes en Europe)</b><svg class="chart" viewBox="0 0 440 170" role="img" aria-label="Couverture par âge et genre" id="tgChart"></svg></div>
+      <div><img src="ad-target.jpg" alt="Panneau de transparence de l'annonce : lieu Paris, âge 23-45 ans, genre tous" style="width:100%;border-radius:8px;border:1px solid var(--line)"><div style="margin-top:8px;font-size:15px;color:var(--muted)">Lecture : Theatro vise les Parisiens de 23 à 45 ans, hommes et femmes, sur les 5 applications. Résultat réel : <b style="color:var(--fg)">71 % d'hommes</b>, <b style="color:var(--fg)">65 % de 25-34 ans</b>. Mêmes réglages que nos campagnes résidence France ; la différence se joue sur la vidéo et le budget.</div></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h2>Publicité active, par concurrent</h2><svg class="chart" viewBox="0 0 440 300" role="img" aria-label="Annonces actives par concurrent" id="adChart"></svg></div>
+    <div class="card"><h2>Notes Google : clubs</h2><svg class="chart" viewBox="0 0 440 300" role="img" aria-label="Note Google des clubs" id="rateChart"></svg></div>
+  </div>
+  <div class="card"><h2>Ce que disent les avis cette semaine</h2>
+    <div style="overflow-x:auto"><table><thead><tr><th>Établissement</th><th class="n">Note</th><th>Positif</th><th>Négatif</th></tr></thead><tbody>
+    <tr><td><b>555</b></td><td class="n">3,8</td><td>Ambiance, tables VIP</td><td>Pourboires réclamés (sécurité, toilettes), ajout sur carte, refus d'entrée, volume</td></tr>
+    <tr><td><b>Secret Room</b></td><td class="n">3,8</td><td>Afro Night, Aurora citée 3 fois</td><td>Réservation confirmée puis refusée à la porte</td></tr>
+    <tr><td>Theatro</td><td class="n">4,4</td><td>Clients fidèles (11e visite), ticket converti en boisson, mascottes</td><td>Entrée 300 DH jugée chère</td></tr>
+    <tr><td>Babouchka</td><td class="n">4,8</td><td>DJ, ambiance</td><td>Filles qui poussent à la dépense, table de 10 sur petite table</td></tr>
+    <tr><td>Eden</td><td class="n">3,7</td><td>—</td><td>Sécurité violente, bouteille 5 000 DH, lignes ajoutées sur l'addition</td></tr>
+    <tr><td>The Circle</td><td class="n">2,7</td><td>Staff attentionné</td><td>Sol sale, tables déplacées, sentiment de discrimination</td></tr>
+    </tbody></table></div></div>
+  <div class="next"><a href="#" data-go="g">Lire les avis</a></div>
+</section>
+
+<!-- ================= AVIS GOOGLE ================= -->
+<section class="tab" id="sec-g" hidden>
+  <div class="chapter"><span class="num">04</span><h2>Avis Google</h2><p>Nos 13 établissements vus par les clients.</p></div>
+  <div class="kpis" id="gKpis"></div>
+  <div class="grid2">
+    <div class="card"><h2>Note par établissement</h2><svg class="chart" viewBox="0 0 440 470" role="img" aria-label="Note Google de chaque établissement ELH" id="gRate"></svg></div>
+    <div class="card"><h2>Nombre d'avis par établissement</h2><svg class="chart" viewBox="0 0 440 470" role="img" aria-label="Nombre d'avis Google de chaque établissement ELH" id="gCount"></svg></div>
+  </div>
+  <div class="card"><h2>Derniers avis, pôle par pôle</h2><div id="gList"></div></div>
+  <div class="next"><a href="#" data-go="m">Voir les dépenses</a></div>
+</section>
+
+<!-- ================= FACTURATION META ================= -->
+<section class="tab" id="sec-m" hidden>
+  <div class="chapter"><span class="num">05</span><h2>Facturation Meta</h2><p>Ce que coûte la publicité, jour par jour, et ce qu'on en fait.</p></div>
+  <div class="kpis" id="mKpis"></div>
+  <div class="card"><h2>Dépense par jour, 30 derniers jours <span style="font-family:var(--body);font-weight:400;font-size:13px;color:var(--muted)">· compte ELH GROUP (EUR) · le jour en cours est partiel</span></h2><svg class="chart vert" viewBox="0 0 900 240" role="img" aria-label="Dépense publicitaire par jour sur 30 jours" id="mDaily"></svg></div>
+  <div class="card"><h2>Par pôle, du 1er au 15 octobre <span style="font-family:var(--body);font-weight:400;font-size:15px;color:var(--muted)" id="mPoleTot"></span></h2><div class="proof" id="mPoles"></div></div>
+  <div class="card"><h2>Remarque et ciblage Meta recommandé</h2><p style="margin:0 0 10px;color:var(--muted);font-size:13px">Synthèse automatique des quatre parties : où sont les touristes, aéroport, concurrence, avis Google, dépenses.</p><div class="target" id="mReco"></div></div>
+</section>
+
+<footer>Données publiques de réservation, programme aérien du jour, statistiques officielles d'hébergement, marché de la location courte durée, bibliothèque publicitaire et avis publics. Taux hôtel par hôtel déduit des chambres restantes et des prix du jour (±5 points). Fond de carte © OpenStreetMap.</footer>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+// ---------- onglets
+const tabs=[["h","#sec-h"],["t","#sec-t"],["a","#sec-a"],["c","#sec-c"],["g","#sec-g"],["m","#sec-m"]];
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function countUp(el){const txt=el.textContent;const m=txt.match(/^(≈ |\+)?([\d\s ]+)([,.]\d+)?(.*)$/);if(!m||reduce)return;const pre=m[1]||"",dec=m[3]||"",post=m[4]||"";const target=parseInt(m[2].replace(/[\s ]/g,""),10);if(isNaN(target)||target<10)return;const t0=performance.now(),dur=900;const step=t=>{const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);el.textContent=pre+Math.round(target*e).toLocaleString('fr-FR')+dec+post;if(p<1)requestAnimationFrame(step);else el.textContent=txt;};requestAnimationFrame(step);}
+function show(k){tabs.forEach(([id,sel])=>{$("#tab-"+id).setAttribute("aria-selected",id===k);$(sel).hidden=id!==k;});window.scrollTo({top:0});const sec=$("#sec-"+k);sec.querySelectorAll(".kpi, .card, .bubble, .proof > div, .target > div").forEach(n=>{n.classList.remove("in");io.observe(n);});try{localStorage.setItem("radar-tab",k)}catch(e){}}
+tabs.forEach(([id])=>$("#tab-"+id).onclick=()=>show(id));
+document.querySelectorAll(".bubble,.next a").forEach(b=>b.onclick=e=>{e.preventDefault();show(b.dataset.go);});
+// ---------- projection (zoom 13, centre 31.595 / -7.975, écran 2560×1352 réduit à 1512×799)
+const WP=2097152,K=0.590625,CLAT=31.595,CLON=-7.975;
+const P=lat=>WP*(0.5-Math.log(Math.tan(Math.PI/4+lat*Math.PI/360))/(2*Math.PI));
+const X=lon=>(1280+(lon-CLON)*WP/360)*K, Y=lat=>(676+P(lat)-P(CLAT))*K;
+// ---------- données
+const weeks=[["13 → 19 oct.","Début des vacances de la Toussaint (France) le 17"],["20 → 26 oct.","Toussaint France + half-term Royaume-Uni : pic du trimestre"],["27 oct. → 2 nov.","Toussaint, half-term, pont du 1er novembre"],["3 → 9 nov.","Retour au calme, couples et seniors"],["10 → 16 nov.","Creux du trimestre"],["17 → 23 nov.","Creux, remontée le week-end"],["24 → 30 nov.","Reprise, groupes et séminaires"],["1 → 7 déc.","Montée vers les fêtes"]];
+const C=[["France","fr",[30,38,36,24,21,22,25,28]],["Espagne","es",[11,12,14,10,9,9,10,12]],["Royaume-Uni","uk",[9,13,13,8,7,7,8,10]],["Italie","it",[6,7,7,5,5,5,6,7]],["Suisse","ch",[6,7,6,5,4,4,5,6]],["Marocains","ma",[6,5,7,6,6,6,6,6]],["Allemagne","de",[4,4,4,4,3,3,4,4]],["Belgique","be",[3,5,5,3,3,3,3,4]],["Pays-Bas","nl",[3,3,3,3,2,2,3,3]],["Golfe, USA, autres","xx",[8,8,8,8,7,7,8,9]]];
+const Z=[{id:"hiv",n:"Hivernage",lat:31.6215,lon:-8.0045,d:[78,92,90,70,62,64,70,80]},{id:"gue",n:"Guéliz",lat:31.634,lon:-8.010,d:[70,82,80,64,58,60,66,74]},{id:"med",n:"Médina",lat:31.628,lon:-7.986,d:[74,88,86,66,60,62,68,78]},{id:"pal",n:"Palmeraie",lat:31.657,lon:-7.945,d:[60,78,76,52,45,47,55,68]},{id:"agd",n:"Agdal",lat:31.595,lon:-7.990,d:[55,62,64,52,48,48,52,58]},{id:"tar",n:"Targa",lat:31.645,lon:-8.055,d:[40,46,48,38,35,36,40,44]},{id:"our",n:"Route de l'Ourika",lat:31.530,lon:-7.950,d:[55,72,70,50,44,46,52,62]},{id:"ami",n:"Route d'Amizmiz",lat:31.548,lon:-8.040,d:[58,74,72,52,46,48,54,64]},{id:"maa",n:"Al Maaden · Ouarzazate",lat:31.602,lon:-7.925,d:[62,80,78,56,50,52,58,70]}];
+// hôtels : nom, zone, bonus luxe, lat, lon, relevé ce soir ("C" complet, "N:prix" N chambres restantes, "O:prix" ouvert)
+const H=[["La Mamounia","med",6,31.62152,-7.99749,"C"],["Royal Mansour","med",8,31.62519,-7.99838,"1:33000"],["Four Seasons","hiv",5,31.61964,-8.01717,"3:14029"],["Es Saadi Palace","hiv",4,31.62112,-8.00430,"7:5623"],["Es Saadi Hôtel","hiv",2,31.62040,-8.00560,"1:3653"],["Sofitel Palais Impérial","hiv",2,31.62138,-8.00261,"C"],["Mövenpick Mansour Eddahbi","hiv",0,31.62387,-8.01442,"O:4900"],["Savoy Le Grand","hiv",0,31.61817,-8.00993,"O:2981"],["Le Méridien N'Fis","hiv",-2,31.61940,-8.00783,"5:4400"],["Nobu Hotel","hiv",5,31.62234,-8.00070,"C"],["Barrière Le Naoura","med",4,31.62867,-7.99702,"7:5752"],["Radisson Blu Carré Eden","gue",1,31.63468,-8.01152,"1:4320"],["2Ciels Boutique","gue",2,31.62936,-8.00798,"C"],["Kenzi Rose Garden","hiv",0,31.62210,-8.00695,"C"],["Barceló Palmeraie","pal",-2,31.66130,-7.93336,"2:3143"],["Pullman Palmeraie","pal",0,31.6525,-7.9545,"C"],["Riu Tikida Palmeraie","pal",-3,31.64884,-7.93641,"C"],["Iberostar Club Palmeraie","pal",-3,31.66390,-7.89958,"C"],["Fairmont Royal Palm","ami",5,31.51338,-8.05213,"7:9573"],["Selman","ami",6,31.57293,-8.02057,"2:10523"],["Eden Andalou (Delta)","ami",-4,31.54453,-8.04713,"O:"],["Kenzi Menara Palace","agd",0,31.58832,-7.98686,"C"],["Adam Park","agd",-3,31.59636,-7.99000,"C"],["Mandarin Oriental","maa",7,31.60391,-7.95102,"3:25088"],["Oberoi","maa",7,31.61163,-7.89630,"C"],["Amanjena","maa",7,31.60835,-7.93394,"3:15955"],["Park Hyatt","maa",6,31.59252,-7.93648,"1:8057"]];
+const V=[["Nommos",31.5916,-7.9898,1],["555 · Sky 5",31.5921,-7.9899,1],["Secret Room",31.6242,-8.0033,1],["Famous Beach",31.5297,-7.9630,1],["Nommos Beach · Lalala",31.5290,-7.9411,1],["Theatro",31.6215,-8.0050,0],["Lotus Club",31.6244,-8.0041,0],["Jad Mahal",31.6222,-8.0003,0],["Babouchka",31.6220,-8.0006,0],["Koya",31.6241,-8.0032,0],["Safran",31.6276,-7.9946,0],["Eden Club",31.6247,-8.0169,0],["The Circle",31.6259,-8.0038,0],["Snob Beach",31.5339,-7.9448,0],["Café del Mar",31.5084,-7.9396,0]];
+const BK=[["15 oct.",74],["24 oct.",56],["14 nov.",48],["5 déc.",45],["30 déc.",55]];
+const aff={fr:{hiv:1,gue:1.1,med:1.2,pal:1,agd:.6,tar:.8,our:1,ami:1,maa:1},uk:{hiv:1.2,gue:.8,med:1.1,pal:1.2,agd:.5,tar:.5,our:1.3,ami:1.1,maa:1.1},es:{hiv:.8,gue:1.3,med:1,pal:.7,agd:1.2,tar:.6,our:1.1,ami:.8,maa:.7},it:{hiv:.9,gue:1.1,med:1.3,pal:.8,agd:.6,tar:.6,our:.9,ami:.9,maa:.9}};
+const relOcc=r=>{if(r==="C")return 98;const n=r.split(":")[0];if(n==="O")return 85;const k=+n;return k<=1?97:k<=3?95:90;};
+const relTag=r=>{if(r==="C")return '<span class="tag full">Complet</span>';const [n,p]=r.split(":");const px=p?` · ${(+p).toLocaleString('fr-FR')} DH`:"";return n==="O"?`<span class="tag open">Ouvert${px}</span>`:`<span class="tag few">${n} ch. restante${n>1?"s":""}${px}</span>`;};
+const col=v=>v<60?"var(--heat1)":v<75?"var(--heat2)":v<90?"var(--heat3)":"var(--heat4)";
+const fmtK=n=>Math.round(n).toLocaleString('fr-FR')+" 000";
+let wk=0,focus=null,layerH=true;
+// ---------- carte : zoom et déplacement
+const svg=$("#map");let vb={x:0,y:0,w:1512,h:799};const S=()=>1512/vb.w;
+function applyVB(){vb.w=Math.min(1512,Math.max(1512/8,vb.w));vb.h=vb.w*799/1512;vb.x=Math.min(1512-vb.w,Math.max(0,vb.x));vb.y=Math.min(799-vb.h,Math.max(0,vb.y));svg.setAttribute("viewBox",`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);drawMap();}
+function zoomAt(f,px,py){const nw=vb.w/f;if(nw>1512||nw<1512/8)return;vb.x=px-(px-vb.x)/f;vb.y=py-(py-vb.y)/f;vb.w=nw;applyVB();}
+const ptr=e=>{const r=svg.getBoundingClientRect();return [vb.x+(e.clientX-r.left)/r.width*vb.w,vb.y+(e.clientY-r.top)/r.height*vb.h];};
+$("#zin").onclick=()=>zoomAt(1.6,vb.x+vb.w/2,vb.y+vb.h/2);$("#zout").onclick=()=>zoomAt(1/1.6,vb.x+vb.w/2,vb.y+vb.h/2);$("#zreset").onclick=()=>{vb={x:0,y:0,w:1512,h:799};applyVB();};
+svg.addEventListener("wheel",e=>{e.preventDefault();const [px,py]=ptr(e);zoomAt(e.deltaY<0?1.25:0.8,px,py);},{passive:false});
+let drag=null;svg.addEventListener("pointerdown",e=>{drag=[e.clientX,e.clientY,vb.x,vb.y];svg.classList.add("drag");svg.setPointerCapture(e.pointerId);});
+svg.addEventListener("pointermove",e=>{if(!drag)return;const r=svg.getBoundingClientRect();vb.x=drag[2]-(e.clientX-drag[0])/r.width*vb.w;vb.y=drag[3]-(e.clientY-drag[1])/r.height*vb.h;applyVB();});
+svg.addEventListener("pointerup",()=>{drag=null;svg.classList.remove("drag");});svg.addEventListener("pointercancel",()=>{drag=null;svg.classList.remove("drag");});
+function drawMap(){
+  const s=S(),real=wk===0;
+  const zg=$("#zones");zg.innerHTML="";
+  Z.forEach(z=>{let v=z.d[wk];if(focus)v=Math.min(100,v*aff[focus][z.id]);const x=X(z.lon),y=Y(z.lat),r=(22+v*0.6)/Math.sqrt(s);
+    zg.insertAdjacentHTML("beforeend",`<g><circle cx="${x}" cy="${y}" r="${r}" fill="${col(v)}" fill-opacity=".38" stroke="${col(v)}" stroke-width="${1.5/s}"><title>${z.n} : ${Math.round(v)}/100</title></circle><text x="${x}" y="${y-r-5/s}" text-anchor="middle" font-size="14" font-weight="700" fill="#111" stroke-width="3">${z.n}</text><text class="num" x="${x}" y="${y+5/s}" text-anchor="middle" font-size="${14/s}" font-weight="700" fill="#111" font-family="IBM Plex Mono,monospace">${Math.round(v)}</text></g>`);});
+  const hg=$("#hotels");hg.innerHTML="";
+  H.forEach(([n,zid,b,la,lo,rel])=>{const z=Z.find(q=>q.id===zid);const o=real?relOcc(rel):Math.max(35,Math.min(98,Math.round(38+z.d[wk]*0.6+b)));const c=col(o),r=13/s,x=X(lo),y=Y(la);
+    hg.insertAdjacentHTML("beforeend",`<g><circle cx="${x}" cy="${y}" r="${r}" fill="${c}" fill-opacity=".85" stroke="#fff" stroke-width="${1.2/s}"><title>${n} · ${o} %</title></circle><text class="num" x="${x}" y="${y+4/s}" text-anchor="middle" font-size="${11/s}" font-weight="700" fill="#111" font-family="IBM Plex Mono,monospace">${o}</text>${s>=1.8?`<text x="${x+r+3/s}" y="${y+4/s}" font-size="9" font-weight="600" fill="#111" stroke-width="2.5">${n}</text>`:""}</g>`);});
+  const vg=$("#venues");vg.innerHTML="";
+  V.forEach(([n,la,lo,e])=>{const x=X(lo),y=Y(la),d=7/s;vg.insertAdjacentHTML("beforeend",e?`<g><rect x="${x-d}" y="${y-d}" width="${2*d}" height="${2*d}" transform="rotate(45 ${x} ${y})" fill="var(--elh)" stroke="#111" stroke-width="${1.2/s}"><title>${n}</title></rect><text x="${x+d+3/s}" y="${y+4/s}" font-size="${Math.max(12/s,8)}" font-weight="700" fill="#111" stroke-width="2.5">${n}</text></g>`:`<g><circle cx="${x}" cy="${y}" r="${4.5/s}" fill="var(--comp)" stroke="#fff" stroke-width="${1/s}"><title>${n}</title></circle>${s>=1.8?`<text x="${x+7/s}" y="${y+4/s}" font-size="8" fill="#333" stroke-width="2.5">${n}</text>`:""}</g>`);});
+  $("#hotels").style.display=layerH?"":"none";$("#zones").style.display=layerH?"none":"";
+}
+// ---------- rendu section touristes
+function render(){
+  const w=weeks[wk],real=wk===0;$("#wkLabel").textContent=w[0];
+  const tot=weeks.map((_,i)=>C.reduce((s,c)=>s+c[2][i],0));$("#kTotal").textContent=fmtK(tot[wk]);
+  drawMap();
+  (function(){const cv=$("#curve");const mx=Math.max(...tot),mn=Math.min(...tot)*0.85;const X=i=>28+i*(344/7),Y=v=>150-(v-mn)/(mx-mn)*110;const pts=tot.map((v,i)=>[X(i),Y(v)]);let d=`M${pts[0][0]} ${pts[0][1]}`;for(let i=1;i<pts.length;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i],cx=(x0+x1)/2;d+=` C${cx} ${y0} ${cx} ${y1} ${x1} ${y1}`;}
+    cv.innerHTML=`<defs><linearGradient id="cg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent2)" stop-opacity=".45"/><stop offset="1" stop-color="var(--accent2)" stop-opacity="0"/></linearGradient><linearGradient id="cl" x1="0" x2="1"><stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/></linearGradient></defs><path class="area" d="${d} L${X(7)} 160 L${X(0)} 160 Z" fill="url(#cg)"/><path class="line" d="${d}" fill="none" stroke="url(#cl)" stroke-width="3.5" stroke-linecap="round"/>`+tot.map((v,i)=>`<g><circle cx="${X(i)}" cy="${Y(v)}" r="${i===wk?8:4.5}" fill="${i===wk?'var(--accent)':'var(--panel)'}" stroke="${i===wk?'var(--panel)':'var(--accent2)'}" stroke-width="2.5"><title>${weeks[i][0]} : ${fmtK(v)} visiteurs</title></circle><text x="${X(i)}" y="178" text-anchor="middle" font-size="11" fill="${i===wk?'var(--accent)':'var(--muted)'}" font-weight="${i===wk?700:400}">S${42+i}</text>${i===wk?`<text x="${X(i)}" y="${Y(v)-14}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--fg)">${fmtK(v)}</text>`:""}</g>`).join("");})();
+  const ht=$("#hotelTable tbody");ht.innerHTML="";let full=0,sum=0;
+  H.map(([n,zid,b,la,lo,rel])=>{const z=Z.find(q=>q.id===zid);const o=real?relOcc(rel):Math.max(35,Math.min(98,Math.round(38+z.d[wk]*0.6+b)));return {n,z,o,rel};}).sort((a,b)=>b.o-a.o).forEach(h=>{sum+=h.o;if(real&&h.rel==="C")full++;const c=col(h.o);
+    ht.insertAdjacentHTML("beforeend",`<tr><td><b>${h.n}</b></td><td>${h.z.n}</td><td style="width:28%;min-width:110px"><div class="bar" style="width:${h.o}%;background:${c}"></div></td><td class="n" style="color:${c}">${real?"":"≈ "}${h.o} %</td><td>${real?relTag(h.rel):'<span class="tag est">estimation</span>'}</td></tr>`);});
+  $("#hotelTot").textContent=`· moyenne ${Math.round(sum/H.length)} %${real?` · ${full} complets sur ${H.length}`:""}`;
+  const tb=$("#countries tbody");tb.innerHTML="";const max=Math.max(...C.map(c=>c[2][wk]));
+  C.forEach(([n,k,arr])=>{const v=arr[wk],d=wk?v-arr[wk-1]:0;const tr=d>0?`<span style="color:var(--good)">▲ ${d}k</span>`:d<0?`<span style="color:var(--bad)">▼ ${-d}k</span>`:`<span style="color:var(--muted)">=</span>`;
+    tb.insertAdjacentHTML("beforeend",`<tr style="${focus&&focus!==k?'opacity:.4':''}"><td>${n}</td><td style="width:32%;min-width:70px"><div class="bar" style="width:${v/max*100}%;background:${k===focus?'var(--accent)':'var(--heat1)'}"></div></td><td class="n">${fmtK(v)}</td><td class="n">${tr}</td></tr>`);});
+  const hot=Z.filter(z=>z.d[wk]>=85).map(z=>z.n),cold=Z.filter(z=>z.d[wk]<50).map(z=>z.n);
+  $("#alert").innerHTML=`<b>${w[0]}.</b> ${w[1]}.${hot.length?` <span style="color:var(--heat4)">Saturé :</span> ${hot.join(", ")}.`:""}${cold.length?` <span style="color:var(--heat1)">Calme :</span> ${cold.join(", ")}.`:""}`;
+}
+(function(){const s=$("#bkchart"),bw=58,gap=16,x0=24;s.innerHTML=BK.map(([lab,pct],i)=>{const x=x0+i*(bw+gap),h=pct*1.15,y=135-h;return `<g><rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="4" fill="${col(pct+15)}" fill-opacity=".85"><title>${lab} : ${pct} % complets</title></rect><text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-size="13" font-weight="600" fill="var(--fg)">${pct} %</text><text x="${x+bw/2}" y="152" text-anchor="middle" font-size="11" fill="var(--muted)">${lab}</text></g>`;}).join("");})();
+[["Tous",null],["France","fr"],["Royaume-Uni","uk"],["Espagne","es"],["Italie","it"]].forEach(([l,k])=>{const b=document.createElement("button");b.className="chip";b.textContent=l;b.setAttribute("aria-pressed",k===focus);b.onclick=()=>{focus=k;document.querySelectorAll("#chipsP .chip").forEach(c=>c.setAttribute("aria-pressed",c===b));render();};(document.getElementById("chipsP")||(()=>{const d=document.createElement("div");d.className="chips";d.id="chipsP";d.style.marginTop="8px";$("#alert").before(d);return d;})()).appendChild(b);});
+$("#wk").addEventListener("input",e=>{wk=+e.target.value;render();});
+$("#lay-hotels").onclick=()=>{layerH=true;$("#lay-hotels").setAttribute("aria-pressed",true);$("#lay-zones").setAttribute("aria-pressed",false);drawMap();};
+$("#lay-zones").onclick=()=>{layerH=false;$("#lay-hotels").setAttribute("aria-pressed",false);$("#lay-zones").setAttribute("aria-pressed",true);drawMap();};
+// ---------- ciblage theatro
+(function(){const D=[["18-24",19,11],["25-34",69,26],["35-44",16,4],["45-54",1,0]];const s=$("#tgChart");if(!s)return;const mx=70,x0=84,bw=130;s.innerHTML=D.map(([a,hm,f],i)=>{const y=14+i*38;return `<g><text x="${x0-8}" y="${y+16}" text-anchor="end" font-size="13" font-weight="600" fill="var(--fg)">${a} ans</text><rect x="${x0}" y="${y}" width="${hm/mx*bw}" height="22" rx="4" fill="var(--accent2)" fill-opacity=".85"/><text x="${x0+hm/mx*bw+6}" y="${y+16}" font-size="12" fill="var(--fg)">${hm} H</text><rect x="${x0+170}" y="${y}" width="${Math.max(f/mx*bw,2)}" height="22" rx="4" fill="var(--accent)" fill-opacity=".85"/><text x="${x0+176+Math.max(f/mx*bw,2)}" y="${y+16}" font-size="12" fill="var(--fg)">${f} F</text></g>`;}).join("")+`<text x="${x0}" y="166" font-size="11" fill="var(--muted)">Hommes 105 (71 %) · Femmes 41 (28 %) · France 140, Espagne 7</text>`;})();
+// ---------- aéroport
+const HR=[[5,0,0,0,0,282],[6,158,161,0,0,0],[7,319,0,0,0,469],[8,766,0,0,0,531],[9,0,0,472,322,314],[10,158,161,158,0,148],[11,483,153,0,0,0],[12,322,0,0,161,730],[13,472,322,0,0,472],[14,297,0,0,158,0],[15,136,0,0,0,681],[16,474,322,158,0,0],[17,0,153,319,0,252],[18,322,322,319,0,0],[19,480,160,160,160,0],[20,640,320,0,0,160],[21,480,160,0,160,0],[22,160,320,0,160,0],[23,160,320,0,0,0]];
+const hc=["var(--fr)","var(--es)","var(--uk)","var(--it)","var(--ot)"];
+(function(){const s=$("#hourChart");const bw=26,x0=36,base=215,mx=1400;s.innerHTML=HR.map(([h,...v],i)=>{const x=x0+i*31;let y=base,parts="";v.forEach((n,j)=>{const hh=n/mx*170;y-=hh;parts+=`<rect x="${x}" y="${y}" width="${bw}" height="${hh}" fill="${hc[j]}"/>`;});const t=v.reduce((a,b)=>a+b,0);return `<g><title>${h} h : ${t} passagers</title>${parts}<text x="${x+bw/2}" y="${y-5}" text-anchor="middle" font-size="10" fill="var(--fg)">${t?t:""}</text><text x="${x+bw/2}" y="${base+16}" text-anchor="middle" font-size="10" fill="var(--muted)">${h}h</text></g>`;}).join("")+`<text x="36" y="250" font-size="10" fill="var(--muted)">Après 18 h : programme type du soir</text>`;})();
+const DC=[["France",32,5050],["Espagne",17,2700],["Royaume-Uni",12,1900],["Italie",8,1280],["Maroc (vols intérieurs)",8,850],["Suisse",5,755],["Portugal",4,630],["Belgique",4,620],["Pays-Bas",3,480],["Allemagne",3,467],["Canada",1,282],["Autres",4,658]];
+(function(){const tb=$("#dayCountries tbody");const mx=DC[0][2];tb.innerHTML=DC.map(([n,v,p])=>`<tr><td>${n}</td><td style="width:34%;min-width:80px"><div class="bar" style="width:${p/mx*100}%"></div></td><td class="n">${v}</td><td class="n">${p.toLocaleString('fr-FR')}</td></tr>`).join("");})();
+(function(){const s=$("#weekChart");const days=[["Lun 13",.85],["Mar 14",.8],["Mer 15",.85],["Jeu 15",1],["Ven 17",1.15],["Sam 18",1.2],["Dim 19",1.0]];days[2][0]="Mer 15";days[2][0]="Mer 15";const lab=["Lun 13","Mar 14","Mer 15","Jeu 16","Ven 17","Sam 18","Dim 19"];const base=[5050,2700,1900,1280,4670];const bw=80,x0=40,b0=185,mx=19000;
+  s.innerHTML=days.map(([_,m],i)=>{const x=x0+i*120;let y=b0,parts="";base.forEach((n,j)=>{const v=Math.round(n*m),hh=v/mx*160;y-=hh;parts+=`<rect x="${x}" y="${y}" width="${bw}" height="${hh}" fill="${hc[j]}" fill-opacity="${i===3?1:.6}"/>`;});const t=Math.round(15600*m);return `<g><title>${lab[i]} : ≈ ${t.toLocaleString('fr-FR')} passagers</title>${parts}<text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-size="13" font-weight="600" fill="var(--fg)">${(t/1000).toFixed(1).replace('.',',')} k</text><text x="${x+bw/2}" y="${b0+18}" text-anchor="middle" font-size="12" fill="${i===3?'var(--accent)':'var(--muted)'}">${lab[i]}${i===3?" · relevé":""}</text></g>`;}).join("");})();
+// ---------- concurrence
+// ---------- avis Google ELH
+// historique du nombre d'avis par établissement (une ligne par jour, pour calculer les nouveaux avis sur 7 jours = aujourd'hui − il y a 7 jours)
+const GH={"2026-10-16":{"Nommos Marrakech":1855,"Famous Beach":1229,"555 Famous Club":966,"Sky 5":879,"Secret Room":775,"Lalala":213,"555 Hotel Clubbing":154,"Nommos Beach Resort":123,"Sainpleat":106,"Nommos Marina Bay":1413,"Sky 5 Tanger":537,"555 Tanger":465,"Le Pti' Versailles":379}};
+const G=[
+ ["Nommos Marrakech","Restaurant · Marrakech",4.4,1855,25,[["+","Show, prix justes, Zineb et Nassima citées, clients revenus 2 soirs de suite"],["−","Accueil froid au desk, réservation WhatsApp introuvable"]],[23,1],[5,"hier","Merci à Zineb pour l'accueil chaleureux. Tout est parfait : le service, la nourriture et le show. Je recommande à 100 %."]],
+ ["Famous Beach","Pool club · Marrakech",4.2,1229,6,[["+","Cuisine, Younes et Fouad cités"],["−","1 h 30 sans service à 200 €/pers. ; lits réservés non disponibles ; cocktails jugés médiocres ; guêpes"]],[5,1],[4,"hier","Vraiment passé un bon moment ! Spectacle, musique et tout l'ensemble du service est top. Je recommande."]],
+ ["555 Famous Club","Club · Marrakech",3.8,966,4,[["+","Ambiance, tables VIP"],["−","Pourboires réclamés (sécurité, toilettes), ajout sur carte sans accord, refus d'entrée, volume"]],[1,3],[1,"il y a 2 jours","Ils ont baissé les prix de façon drastique et ont gâché l'expérience en insistant sur les pourboires. Je ne recommande pas."]],
+ ["Sky 5","Rooftop · Marrakech",4.1,879,8,[["+","Vue, Khalid cité 3 fois, bon pour les matchs"],["−","1 h d'attente pour l'addition en payant par carte"]],[7,1],[5,"il y a 3 jours","Super endroit, je recommande. Khalid est un super hôte."]],
+ ["Secret Room","Club · Marrakech",3.8,775,0,[["+","Afro Night du dimanche, Aurora citée 3 fois"],["−","Réservation confirmée puis refusée à la porte, attitude de la sécurité"]],[0,0],[4,"il y a une semaine","(sans texte)"]],
+ ["Lalala","Restaurant · Marrakech",4.8,213,1,[["+","« N°1 à Marrakech », Azeddine cité 2 fois, Imad cité"],["−","Musique trop forte pour un dîner"]],[1,0],[5,"il y a 5 jours","INCROYABLE ! Merci à Beher, accueil incroyable."]],
+ ["555 Hotel Clubbing","Hôtel · Marrakech",4.2,154,4,[["+","Propreté, petit-déjeuner, Nesrine et Faissel cités, rooftop inclus"],["−","Bruit du club au 1er étage jusqu'à 5 h ; taxi aéroport payé d'avance non honoré"]],[1,3],[1,"aujourd'hui","Discrimination and unfair treatment at this hotel. I had a very disappointing experience…"]],
+ ["Nommos Beach Resort","Hôtel · Marrakech",4.4,123,3,[["+","Villas, propreté, Yasmine citée"],["−","1 h d'attente malgré réservation confirmée, personnel jugé impoli"]],[2,0],[5,"il y a 2 jours","Quel endroit incroyable ! L'hôtel est vraiment fantastique, la nourriture, le service, tout est parfait !"]],
+ ["Sainpleat","Restaurant · Marrakech",4.0,106,1,[["+","Tacos chicken tenders, sauce, « meilleur healthy de Marrakech »"],["−","Mouche dans une salade, livraison 1 h, poisson pas cuit, dispute entre employés devant les clients"]],[1,0],[5,"il y a 6 jours","(sans texte)"]],
+ ["Nommos Marina Bay","Restaurant · Tanger",4.4,1413,30,[["+","Ambiance, show, Abdelhak et Kamal cités, « service rare en Europe »"],["−","Prix jugés injustifiés : sushi et risotto ordinaires, pain basique"]],[29,1],[1,"aujourd'hui","Expérience déplorable ! Ce restaurant impose à ses clients de commander plusieurs éléments (boisson…)"]],
+ ["Sky 5 Tanger","Rooftop · Tanger",3.6,537,1,[["+","Vue, coucher de soleil, chicha, Faissal cité"],["−","Obligation de commander à manger, manager irrespectueux, intoxication alimentaire signalée, smoothie 240 DH"]],[1,0],[5,"il y a 6 jours","Absolutely amazing experience! We highly recommend. Mustapha was the best, so accommodating!"]],
+ ["555 Tanger","Club · Tanger",3.7,465,7,[["+","Musique, Hatim cité"],["−","Entrée 300 DH jugée arbitraire, double paiement carte + espèces, club vide un vendredi"]],[7,0],[5,"il y a 2 jours","(sans texte)"]],
+ ["Le Pti' Versailles","Restaurant · Tanger",4.5,379,14,[["+","Cuisine, danseurs, Abdul cité, anniversaires"],["−","Personnel sans sourire"]],[14,0],[5,"hier","Amazing place and great service!"]]
+];
+(function(){const tot=G.reduce((s,g)=>s+g[3],0),wa=G.filter(g=>g[2]).reduce((s,g)=>s+g[2]*g[3],0)/tot,nw=G.reduce((s,g)=>s+g[4],0);
+  $("#gKpis").innerHTML=`<div class="kpi"><div class="v">${tot.toLocaleString('fr-FR')}</div><div class="l">avis Google sur nos 13 établissements</div><div class="t real">relevé 16 oct.</div></div><div class="kpi"><div class="v">${wa.toFixed(2).replace('.',',')}</div><div class="l">note moyenne pondérée du groupe</div><div class="t real">relevé 16 oct.</div></div><div class="kpi"><div class="v">4,8</div><div class="l">meilleure note : Lalala · la plus basse : Sky 5 Tanger (3,6)</div><div class="t real">relevé 16 oct.</div></div><div class="kpi"><div class="v">+${nw}</div><div class="l">nouveaux avis reçus sur les 7 derniers jours · ${G.reduce((s,g)=>s+g[6][0],0)} positifs (4–5★) · ${G.reduce((s,g)=>s+g[6][1],0)} négatifs (1–2★)</div><div class="t real">relevé 16 oct.</div></div>`;
+  const rs=[...G].filter(g=>g[2]).sort((a,b)=>b[2]-a[2]);$("#gRate").innerHTML=rs.map((g,i)=>{const y=12+i*35,w=g[2]/5*270,c=g[2]>=4.3?'var(--good)':g[2]>=4?'var(--heat2)':'var(--heat4)';return `<g><text x="128" y="${y+15}" text-anchor="end" font-size="12" fill="var(--fg)">${g[0]}</text><rect x="136" y="${y}" width="${w}" height="22" rx="4" fill="${c}" fill-opacity=".85"/><text x="${142+w}" y="${y+15}" font-size="12" font-weight="600" fill="var(--fg)">${g[2].toLocaleString('fr-FR')}</text></g>`;}).join("");
+  const cs=[...G].sort((a,b)=>b[3]-a[3]);const mx=cs[0][3];$("#gCount").innerHTML=cs.map((g,i)=>{const y=12+i*33,w=g[3]/mx*250;return `<g><text x="128" y="${y+15}" text-anchor="end" font-size="12" fill="var(--fg)">${g[0]}</text><rect x="136" y="${y}" width="${Math.max(w,2)}" height="22" rx="4" fill="var(--heat1)" fill-opacity=".85"/><text x="${142+Math.max(w,2)}" y="${y+15}" font-size="12" font-weight="600" fill="var(--fg)">${g[3].toLocaleString('fr-FR')}</text></g>`;}).join("");
+  const PG=[["Hôtellerie",["555 Hotel Clubbing","Nommos Beach Resort"]],["Night clubs",["555 Famous Club","Sky 5","Secret Room","555 Tanger","Sky 5 Tanger"]],["Restaurants",["Nommos Marrakech","Nommos Marina Bay","Le Pti' Versailles","Lalala","Sainpleat"]],["Pool club",["Famous Beach"]]];
+  const card=g=>`<div><b>${g[0]} · ${g[1]}</b><div style="display:flex;gap:10px;align-items:baseline;margin:4px 0 8px"><span class="big">${g[2]?g[2].toLocaleString('fr-FR'):'—'}</span><span style="color:var(--muted)">${g[3].toLocaleString('fr-FR')} avis</span></div><div class="w7"><span class="n">+${g[4]}</span><span>nouveaux avis en 7 jours</span><span class="pm"><b style="color:var(--good)">${g[6][0]} ★ positifs</b> · <b style="color:var(--bad)">${g[6][1]} négatifs</b></span></div>${g[7]?`<div class="lastrev ${g[7][0]>=4?'ok':g[7][0]<=2?'ko':''}"><div class="lr-h"><span class="stars">${'★'.repeat(g[7][0])}${'☆'.repeat(5-g[7][0])}</span><span class="when">Dernier avis reçu · ${g[7][1]}</span></div><div class="lr-t">« ${g[7][2]} »</div></div>`:''}${g[5].map(([s,t])=>`<div style="display:flex;gap:8px;margin:4px 0;border:0;padding:0"><span style="font-weight:700;color:${s==='+'?'var(--good)':s==='−'?'var(--bad)':'var(--muted)'};min-width:12px">${s}</span><span>${t}</span></div>`).join("")}</div>`;
+  $("#gList").innerHTML=PG.map(([pn,names],i)=>{const gs=names.map(n=>G.find(g=>g[0]===n)).filter(Boolean);const n7=gs.reduce((s,g)=>s+g[4],0),po=gs.reduce((s,g)=>s+g[6][0],0),ne=gs.reduce((s,g)=>s+g[6][1],0);return `<div class="pole-h"><span class="num">0${i+1}</span><h3>${pn}</h3><span class="pole-s">+${n7} avis en 7 jours · <b style="color:var(--good)">${po} positifs</b> · <b style="color:var(--bad)">${ne} négatifs</b></span></div><div class="proof">${gs.map(card).join("")}</div>`;}).join("");
+})();
+(function(){const A=[["Theatro",72],["Eden",0],["Babouchka",0],["The Circle",0],["Koya",0],["Safran",0],["Snob Beach",0],["Café del Mar",0]];const s=$("#adChart");s.innerHTML=A.map(([n,v],i)=>{const y=14+i*26,w=v/72*280;return `<g><text x="110" y="${y+13}" text-anchor="end" font-size="12" fill="var(--fg)">${n}</text><rect x="118" y="${y}" width="${Math.max(w,2)}" height="18" rx="3" fill="${v>20?'var(--heat4)':v>0?'var(--heat2)':'var(--comp)'}"/><text x="${124+Math.max(w,2)}" y="${y+13}" font-size="12" fill="var(--fg)">${v}</text></g>`;}).join("");
+  const R=[["Babouchka",4.8,0],["Theatro",4.4,0],["555",3.8,1],["Secret Room",3.8,1],["Eden",3.7,0],["The Circle",2.7,0]];const r=$("#rateChart");r.innerHTML=R.map(([n,v,e],i)=>{const y=20+i*44,w=v/5*280;return `<g><text x="110" y="${y+16}" text-anchor="end" font-size="13" font-weight="${e?700:400}" fill="var(--fg)">${n}</text><rect x="118" y="${y}" width="${w}" height="24" rx="4" fill="${e?'var(--elh)':'var(--comp)'}"/><text x="${124+w}" y="${y+16}" font-size="13" font-weight="600" fill="var(--fg)">${v.toLocaleString('fr-FR')}</text></g>`;}).join("");})();
+// ---------- init
+// ---------- facturation Meta (compte ELH GROUP, EUR) — mis à jour chaque matin
+const SPEND=[["2026-09-17",741.84],["2026-09-18",765.41],["2026-09-19",1581.16],["2026-09-20",783.22],["2026-09-21",888.42],["2026-09-22",869.79],["2026-09-23",1113.9],["2026-09-24",943.77],["2026-09-25",1404.11],["2026-09-26",1300.62],["2026-09-27",1281.36],["2026-09-28",1066.13],["2026-09-29",1083.38],["2026-09-30",982.6],["2026-10-01",992.78],["2026-10-02",1114.27],["2026-10-03",1114.64],["2026-10-04",1252.56],["2026-10-05",1042.73],["2026-10-06",935.25],["2026-10-07",854.48],["2026-10-08",842.06],["2026-10-09",901],["2026-10-10",975.26],["2026-10-11",1147.9],["2026-10-12",1074.88],["2026-10-13",995.73],["2026-10-14",812.78],["2026-10-15",776.04],["2026-10-16",414.15]];
+// dépense par établissement du 1er au 15 octobre inclus (EUR, jours complets, hors Famous Beach), regroupée par pôle
+const POLES=[["Hôtellerie",[["Nommos Beach Resort",2777],["555 Hotel Clubbing",2394]]],["Night clubs",[["Sky 5 Marrakech",1172],["555 Marrakech",949],["Secret Room",893],["Sky 5 Tanger",874],["555 Tanger",843]]],["Restaurants",[["Le Pti' Versailles · Tanger",1302],["Sainpleat",951],["Nommos Marrakech",859],["Nommos Tanger",807],["Lalala",261]]],["Pool club",[["Nommos Pool",751]]]];
+const RECO=[
+ ["Constat","Marrakech est pleine : 74 % des hébergements complets ce soir, 12 grands hôtels sur 26. Un tiers des arrivées viennent de France, puis Espagne et Royaume-Uni. Theatro domine la publicité au Maroc mais n'exporte presque pas (≈ 240 personnes touchées hors Maroc). Nos clubs sont à 3,8 sur Google à cause de l'accueil et des pourboires ; nos restaurants entre 4,0 et 4,8."],
+ ["Le problème de la langue","Cibler « français » touche les Marocains ; cibler « anglais » touche aussi les résidents et expatriés. Aucun réglage sur place ne sépare proprement touriste et résident. La seule cible propre est le pays de résidence : France, Royaume-Uni, Espagne, Italie, Allemagne, ciblés avant le départ, puis retargeting de ceux qui ont réagi une fois arrivés."],
+ ["Hôtellerie (Nommos Beach Resort, 555 Hotel)","Rester sur France et Royaume-Uni par pays de résidence. Les réservations se prennent 5 semaines avant : lancer dès le 1er novembre les campagnes Noël et Nouvel An, lever le pied du 10 au 23 novembre."],
+ ["Night clubs Marrakech (555, Secret Room, Sky 5)","Budget sur les jours de gros vols (jeudi, vendredi, samedi) avec diffusion de 14 h à 23 h. Cible : pays de résidence des touristes + retargeting des visiteurs du site et des comptes Instagram. En parallèle, régler la porte et les pourboires : chaque euro de pub ramène des avis à 1 étoile tant que ce point n'est pas corrigé."],
+ ["Night clubs Tanger (555 Tanger, Sky 5 Tanger)","Marché différent : Espagnols et Marocains du nord, week-end et ferries. Cibler Espagne (Andalousie) par résidence et Tanger-Tétouan en local, sans mélanger avec les campagnes de Marrakech."],
+ ["Restaurants Marrakech (Nommos, Lalala, Sainpleat)","Nommos : dîner-spectacle sur la France avant départ et retargeting des touristes arrivés. Lalala et Sainpleat : résidents de Marrakech, brunch et livraison, budget local."],
+ ["Restaurants Tanger (Nommos Marina Bay, Le Pti' Versailles)","Résidents de Tanger et visiteurs espagnols du week-end ; aucune campagne France pour ces deux adresses, le client vient de la région."],
+ ["Pool club (Nommos Pool)","Journée piscine avec navette : touristes en ville par retargeting + France et Royaume-Uni par résidence pour la Toussaint et Noël."],
+ ["Novembre","Du 10 au 23 novembre, baisser le budget touristes de 20 à 30 % et basculer vers les résidents (offres tables, brunch). Plein budget à partir du 1er décembre."]
+];
+(function(){const eur=n=>Math.round(n).toLocaleString('fr-FR')+" €";const full=SPEND.slice(0,-1);const last=full[full.length-1];const m=full.filter(d=>d[0].startsWith("2026-10"));const mtot=m.reduce((s,d)=>s+d[1],0);const t30=full.reduce((s,d)=>s+d[1],0);const w7=full.slice(-7).reduce((s,d)=>s+d[1],0);
+  $("#mKpis").innerHTML=`<div class="kpi"><div class="v">${eur(last[1])}</div><div class="l">dépensés hier, ${new Date(last[0]).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</div><div class="t real">relevé ce matin</div></div><div class="kpi"><div class="v">${eur(mtot)}</div><div class="l">du 1er au ${m.length} octobre (jours complets) · ${eur(mtot/m.length)} par jour</div><div class="t real">relevé ce matin</div></div><div class="kpi"><div class="v">${eur(w7)}</div><div class="l">7 derniers jours complets</div><div class="t real">relevé ce matin</div></div><div class="kpi"><div class="v">${eur(t30)}</div><div class="l">30 derniers jours complets · ${eur(t30/full.length)} par jour</div><div class="t real">relevé ce matin</div></div>`;
+  const s=$("#mDaily");const mx=Math.max(...SPEND.map(d=>d[1]));const bw=24,x0=40,b0=195;s.innerHTML=SPEND.map(([d,v],i)=>{const x=x0+i*28,h=v/mx*160,y=b0-h,partial=i===SPEND.length-1;const dt=new Date(d);return `<g><title>${dt.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})} : ${v.toFixed(2).replace('.',',')} €</title><rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="3" fill="${partial?'var(--muted)':v>1200?'var(--heat3)':'var(--heat1)'}" fill-opacity="${partial?.5:.9}"/>${v>1200||i===SPEND.length-2?`<text x="${x+bw/2}" y="${y-5}" text-anchor="middle" font-size="10" fill="var(--fg)">${Math.round(v)}</text>`:""}${dt.getDay()===1||i===0?`<text x="${x+bw/2}" y="${b0+14}" text-anchor="middle" font-size="9" fill="var(--muted)">${dt.getDate()}/${dt.getMonth()+1}</text>`:""}</g>`;}).join("")+`<line x1="${x0}" y1="${b0}" x2="${x0+SPEND.length*28}" y2="${b0}" stroke="var(--line)"/><text x="${x0}" y="${b0+30}" font-size="10" fill="var(--muted)">Barre grise : aujourd'hui, journée en cours</text>`;
+  const ptot=POLES.reduce((s,p)=>s+p[1].reduce((a,b)=>a+b[1],0),0);$("#mPoleTot").textContent=`· ${eur(ptot)} au total`;
+  $("#mPoles").innerHTML=POLES.map(([n,items])=>{const t=items.reduce((a,b)=>a+b[1],0),mx=items[0][1];return `<div><b>${n}</b><div style="display:flex;gap:10px;align-items:baseline;margin:4px 0 8px"><span class="big">${eur(t)}</span><span style="color:var(--muted)">${Math.round(t/ptot*100)} % du total</span></div>${items.map(([e,v])=>`<div style="display:grid;grid-template-columns:1fr 2fr auto;gap:8px;align-items:center;margin:4px 0;border:0;padding:0;font-size:12px"><span>${e}</span><div class="bar" style="width:${Math.max(v/mx*100,1)}%;background:var(--accent)"></div><span style="font-variant-numeric:tabular-nums">${eur(v)}</span></div>`).join("")}</div>`;}).join("");
+  $("#mReco").innerHTML=RECO.map(([t,b])=>`<div><b>${t}</b>${b}</div>`).join("");
+})();
+// bulles de l'accueil
+$("#bG").textContent=G.reduce((s,g)=>s+g[3],0).toLocaleString('fr-FR');
+$("#bM").textContent=Math.round(SPEND[SPEND.length-2][1]).toLocaleString('fr-FR')+" €";
+$("#bT").textContent=BK[0][1]+" %";
+document.querySelectorAll(".kpi .v, .bubble .n, .big").forEach(el=>el.dataset.v=el.textContent);
+try{const t=localStorage.getItem("radar-tab");if(t&&["h","t","a","c","g","m"].includes(t))setTimeout(()=>show(t),0);}catch(e){}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");e.target.querySelectorAll(".kpi .v, .bubble .n, .big").forEach(countUp);io.unobserve(e.target);}}),{threshold:.15});
+document.querySelectorAll(".kpi, .card, .bubble, .proof > div, .target > div").forEach(n=>io.observe(n));
+(function(){const el=$("#radar-clock");const tick=()=>{if(el)el.textContent="Capture "+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});};tick();setInterval(tick,30000);const sc=$("#skyCount");if(sc){const now=new Date(),h=now.getHours()+now.getMinutes()/60;const landed=Math.round(Math.max(0,Math.min(101,(h-5.5)/13.5*101)));let n=0;const st=()=>{if(n<landed){n++;sc.textContent=n;setTimeout(st,20);}};st();}})();
+addEventListener("scroll",()=>{const d=document.documentElement;$("#prog").style.width=(d.scrollTop/Math.max(1,d.scrollHeight-d.clientHeight)*100)+"%";},{passive:true});
+try{const s=localStorage.getItem("radar-wk");if(s!==null){wk=+s;$("#wk").value=wk;}}catch(e){}
+$("#wk").addEventListener("change",()=>{try{localStorage.setItem("radar-wk",wk)}catch(e){}});
+render();
+})();
+</script>
