@@ -97,6 +97,18 @@ footer{color:var(--muted);font-size:13px;line-height:1.5}
 .next{display:flex;justify-content:center;padding:6px 0 0}
 .next a{color:var(--muted);text-decoration:none;font-size:15px;display:inline-flex;align-items:center;gap:8px}
 .next a::after{content:"↓";display:inline-block;animation:bounce 1.6s infinite}
+/* aéroports d'origine */
+.apmap{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+.aprow{opacity:0;transform:translateX(-14px);transition:opacity .6s cubic-bezier(.2,.8,.2,1) var(--d),transform .6s cubic-bezier(.2,.8,.2,1) var(--d)}
+.card.in .aprow{opacity:1;transform:none}
+.aphead{display:flex;align-items:center;gap:8px;font-size:15px;margin-bottom:5px}
+.aphead .apn{color:var(--muted);margin-left:auto;font-family:var(--mono);font-size:12px;letter-spacing:.06em}
+.apdot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.apflow{display:flex;flex-wrap:wrap;gap:5px}
+.appill{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:max-content;padding:7px 9px;border-radius:999px;color:#fff;font-size:13px;line-height:1;transform-origin:left center;animation:growx .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0ms)}
+.appill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.appill b{background:rgba(255,255,255,.28);border-radius:999px;padding:2px 7px;font-size:12px;flex:none}
+@media(max-width:700px){.apflow{flex-wrap:wrap}.appill{flex:1 1 auto!important}}
 /* ciblage theatro */
 .tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 @media(max-width:800px){.tgrid{grid-template-columns:1fr 1fr}}
@@ -251,6 +263,7 @@ footer{color:var(--muted);font-size:13px;line-height:1.5}
       <div class="legend"><span><i class="sw" style="background:var(--fr)"></i>France</span><span><i class="sw" style="background:var(--es)"></i>Espagne</span><span><i class="sw" style="background:var(--uk)"></i>Royaume-Uni</span><span><i class="sw" style="background:var(--it)"></i>Italie</span><span><i class="sw" style="background:var(--ot)"></i>Autres</span></div></div>
     <div class="card"><h2>Aujourd'hui, par pays</h2><table id="dayCountries"><thead><tr><th>Pays</th><th></th><th class="n">Vols</th><th class="n">Passagers</th></tr></thead><tbody></tbody></table></div>
   </div>
+  <div class="card"><h2>D'où décollent-ils, aéroport par aéroport <span style="font-family:var(--body);font-weight:400;font-size:15px;color:var(--muted)">· 90 vols identifiés aujourd'hui, largeur = nombre de vols</span></h2><div class="apmap" id="apMap"></div></div>
   <div class="card"><h2>La semaine, jour par jour <span style="font-family:var(--body);font-weight:400;font-size:13px;color:var(--muted)">· jeudi et vendredi relevés (programme du jour), autres jours estimés d'après le rythme habituel de la semaine ; répartition par pays = celle du vendredi</span></h2>
     <svg class="chart vert" viewBox="0 0 900 230" role="img" aria-label="Passagers par jour et par pays sur la semaine" id="weekChart"></svg></div>
   <div class="card"><h2>Ce que ça change pour nous</h2><div class="target">
@@ -395,6 +408,9 @@ const DC=[["France",31,4903],["Royaume-Uni",11,1749],["Espagne",11,1744],["Itali
 (function(){const tb=$("#dayCountries tbody");const mx=DC[0][2];tb.innerHTML=DC.map(([n,v,p])=>`<tr><td>${n}</td><td style="width:34%;min-width:80px"><div class="bar" style="width:${p/mx*100}%"></div></td><td class="n">${v}</td><td class="n">${p.toLocaleString('fr-FR')}</td></tr>`).join("");})();
 (function(){const s=$("#weekChart");const days=[["Lun 12",Math.round(15600*.85),0],["Mar 13",Math.round(15600*.8),0],["Mer 14",Math.round(15600*.85),0],["Jeu 15",15600,1],["Ven 16",17000,1],["Sam 17",Math.round(17000*1.05),0],["Dim 18",Math.round(15600*.95),0]];const share=[.35,.13,.13,.12,.27];const bw=80,x0=40,b0=185,mx=19000;
   s.innerHTML=days.map(([lab,t,real],i)=>{const x=x0+i*120;let y=b0,parts="";share.forEach((sh,j)=>{const hh=t*sh/mx*160;y-=hh;parts+=`<rect x="${x}" y="${y}" width="${bw}" height="${hh}" fill="${hc[j]}" fill-opacity="${real?1:.55}"/>`;});return `<g><title>${lab} : ≈ ${t.toLocaleString('fr-FR')} passagers${real?" (relevé)":" (estimation)"}</title>${parts}<text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-size="13" font-weight="600" fill="var(--fg)">${(t/1000).toFixed(1).replace('.',',')} k</text><text x="${x+bw/2}" y="${b0+18}" text-anchor="middle" font-size="12" fill="${real?'var(--accent)':'var(--muted)'}">${lab}${real?" · relevé":""}</text></g>`;}).join("");})();
+// ---------- aéroports d'origine
+const AP=[["France",31,[["Paris Orly",7],["Paris CDG",5],["Lyon",4],["Toulouse",3],["Marseille",2],["Bordeaux",2],["Nîmes",1],["Tours",1],["Paris Beauvais",1],["Perpignan",1],["Nice",1],["Nantes",1],["Montpellier",1],["Lille",1]]],["Espagne",11,[["Madrid",3],["Malaga",3],["Barcelone",2],["Valence",1],["Alicante",1],["Las Palmas",1]]],["Royaume-Uni",11,[["Manchester",3],["Londres Gatwick",2],["Londres Stansted",1],["Londres Heathrow",1],["Londres Luton",1],["Bristol",1],["Newcastle",1],["Glasgow",1]]],["Italie",10,[["Milan Malpensa",4],["Rome Ciampino",1],["Pise",1],["Milan Bergame",1],["Turin",1],["Bologne",1],["Palerme",1]]],["Maroc (vols intérieurs)",8,[["Casablanca",5],["Fès",1],["Tanger",1],["Laâyoune",1]]],["Portugal",4,[["Lisbonne",3],["Faro",1]]],["Suisse",4,[["Genève",2],["Zurich",1],["Bâle",1]]],["Pays-Bas",3,[["Amsterdam",2],["Eindhoven",1]]],["Allemagne",3,[["Berlin",1],["Hambourg",1],["Francfort",1]]],["Autres (Irlande, Bulgarie, Belgique, Turquie, Autriche)",5,[["Dublin",1],["Sofia",1],["Bruxelles",1],["Istanbul",1],["Vienne",1]]]];
+(function(){const el=$("#apMap");if(!el)return;const col={"France":"var(--fr)","Espagne":"var(--es)","Royaume-Uni":"var(--uk)","Italie":"var(--it)"};el.innerHTML=AP.map(([c,n,aps],i)=>`<div class="aprow" style="--d:${i*80}ms"><div class="aphead"><span class="apdot" style="background:${col[c]||'var(--ot)'}"></span><b>${c}</b><span class="apn">${n} vol${n>1?"s":""}</span></div><div class="apflow">${aps.map(([a,k])=>`<span class="appill" style="flex:${k} 1 auto;background:${col[c]||'var(--ot)'};--w:${k}" title="${a} : ${k} vol${k>1?"s":""}"><span>${a}</span><b>${k}</b></span>`).join("")}</div></div>`).join("");})();
 // ---------- concurrence
 // ---------- avis Google ELH
 // historique du nombre d'avis par établissement (une ligne par jour, pour calculer les nouveaux avis sur 7 jours = aujourd'hui − il y a 7 jours)
